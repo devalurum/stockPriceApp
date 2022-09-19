@@ -1,0 +1,27 @@
+jib {
+
+    from {
+        image = 'openjdk:11-jre-slim-buster'
+
+        auth {
+            username = DOCKERHUB_USERNAME
+            password = DOCKERHUB_PASSWORD
+        }
+    }
+
+    to {
+        tags = ["v1", "latest"]
+        image = "devalurum/telegram-stock-bot"
+
+        auth {
+            username = DOCKERHUB_USERNAME
+            password = DOCKERHUB_PASSWORD
+        }
+    }
+
+    container {
+        creationTime = 'USE_CURRENT_TIMESTAMP'
+        ports = ['8080']
+        args = ['']
+    }
+}

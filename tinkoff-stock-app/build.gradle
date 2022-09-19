@@ -1,0 +1,65 @@
+plugins {
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+    id 'java'
+    id 'java-library'
+    id 'com.google.cloud.tools.jib' version '3.3.0'
+}
+
+apply from: 'jib.gradle'
+
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+ext {
+    springEnvVersion = "2.5.4"
+    lombokVersion = "1.18.24"
+    openApiVersion = "1.6.9"
+    kafkaVersion = "2.8.5"
+    springCloudVersion = "2021.0.3"
+    tinkoffApiVersion = "1.0.11.1"
+    lombokMapstructBindingVersion = "0.2.0";
+    mapstructVersion = "1.5.2.Final"
+    jacksonDatatypeVersion = "2.8.8"
+    caffeineVersion = "3.1.1"
+}
+
+dependencies {
+    implementation('org.springframework.boot:spring-boot-starter-web') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonDatatypeVersion}"
+
+    implementation "ru.tinkoff.piapi:java-sdk-core:${tinkoffApiVersion}"
+    implementation "com.github.ben-manes.caffeine:caffeine:${caffeineVersion}"
+
+    implementation "org.springdoc:springdoc-openapi-webmvc-core:$openApiVersion"
+    implementation "org.springdoc:springdoc-openapi-ui:$openApiVersion"
+    implementation "org.springdoc:springdoc-openapi-data-rest:$openApiVersion"
+    implementation "org.springframework.kafka:spring-kafka:${kafkaVersion}"
+
+    implementation "me.paulschwarz:spring-dotenv:${springEnvVersion}"
+
+    implementation "org.mapstruct:mapstruct:$mapstructVersion",
+            "org.projectlombok:lombok:$lombokVersion",
+            "org.projectlombok:lombok-mapstruct-binding:$lombokMapstructBindingVersion"
+
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}",
+            "org.projectlombok:lombok:$lombokVersion",
+            "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named("bootJar") {
+    archiveName = "$baseName.$extension"
+}
+
+tasks.jib.dependsOn(bootJar)
+tasks.jibDockerBuild.dependsOn(bootJar)

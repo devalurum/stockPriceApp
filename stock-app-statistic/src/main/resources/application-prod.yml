@@ -1,0 +1,33 @@
+server:
+  port: 8082
+spring:
+  datasource:
+    url: jdbc:postgresql://${DATABASE_HOST}:5432/stock_system
+    username: postgres
+    password: 12345
+  kafka:
+    bootstrap-servers: ${KAFKA_HOST}:9092
+    consumer:
+      auto-offset-reset: earliest
+  flyway:
+    baseline-on-migrate: true
+
+
+
+kafka:
+  server: ${KAFKA_HOST}:9092
+  general:
+    topic:
+      name: tickers
+      group:
+        id: group_id_2
+  stat_request:
+    topic:
+      name: stat_req
+      group:
+        id: group_id
+  stat_answer:
+    topic:
+      name: stat_ans
+      group:
+        id: group_id

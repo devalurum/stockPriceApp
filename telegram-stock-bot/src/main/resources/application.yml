@@ -1,0 +1,74 @@
+server:
+  port: 80
+  servlet:
+    context-path: /telegram-stock-bot
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: telegram-stock-bot
+  datasource:
+    driverClassName: org.postgresql.Driver
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.spatial.dialect.postgis.PostgisPG95Dialect
+    open-in-view: true
+  config:
+    import: optional:file:.env[.properties]
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      auto-offset-reset: earliest
+
+management:
+  server:
+    port: 8090
+  endpoints:
+    enabled-by-default: false
+  endpoint:
+    health:
+      enabled: true
+      probes:
+        enabled: true
+
+kafka:
+  server: localhost:9092
+  general:
+    topic:
+      name: tickers
+      group:
+        id: group_id
+  stock:
+    topic:
+      name: stocks
+      group:
+        id: group_id
+  log:
+    topic:
+      name: log
+      group:
+        id: group_id
+  stat_request:
+    topic:
+      name: stat_req
+      group:
+        id: group_id
+  stat_answer:
+    topic:
+      name: stat_ans
+      group:
+        id: group_id
+
+app:
+  telegram:
+    token: ${TELEGRAM_TOKEN}
+    username: StocksPricesBot
+
+.env:
+  prefix: ""
+  directory: "./config"
+  ignoreIfMalformed: true
+  ignoreIfMissing: true
+  systemProperties: true
+

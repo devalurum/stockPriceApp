@@ -1,0 +1,5 @@
+rootProject.name = 'stockPriceApp'
+
+include 'telegram-stock-bot'
+include 'tinkoff-stock-app'
+include 'stock-app-statistic'

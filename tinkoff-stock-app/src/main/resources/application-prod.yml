@@ -1,0 +1,32 @@
+server:
+  port: 8081
+
+spring:
+  kafka:
+    bootstrap-servers: ${KAFKA_HOST}:9092
+    consumer:
+      auto-offset-reset: earliest
+  cache:
+    cache-names: stock
+    caffeine:
+      spec: expireAfterAccess=5m
+
+kafka:
+  server: ${KAFKA_HOST}:9092
+  general:
+    topic:
+      name: tickers
+      group:
+        id: group_id
+  stock:
+    topic:
+      name: stocks
+      group:
+        id: group_id
+  log:
+    topic:
+      name: log
+      group:
+        id: group_id
+
+

@@ -1,0 +1,50 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${DATABASE_HOST}:5432/stock_system
+    username: postgres
+    password: 12345
+  kafka:
+    bootstrap-servers: ${KAFKA_HOST}:9092
+    consumer:
+      auto-offset-reset: earliest
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: create # replace after first run on "none" or "update"
+    show-sql: true
+    generate-ddl: true
+    properties:
+      hibernate:
+        format_sql: true
+        generate_statistics: false
+
+kafka:
+  server: ${KAFKA_HOST}:9092
+  general:
+    topic:
+      name: tickers
+      group:
+        id: group_id
+  stock:
+    topic:
+      name: stocks
+      group:
+        id: group_id
+  log:
+    topic:
+      name: log
+      group:
+        id: group_id
+  stat_request:
+    topic:
+      name: stat_req
+      group:
+        id: group_id
+  stat_answer:
+    topic:
+      name: stat_ans
+      group:
+        id: group_id

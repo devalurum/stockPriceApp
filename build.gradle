@@ -1,0 +1,57 @@
+plugins {
+    id 'idea'
+    id 'io.spring.dependency-management' version "1.0.12.RELEASE"
+    id 'org.springframework.boot' version '2.7.2' apply false
+    id 'java'
+    id 'java-library'
+}
+
+idea {
+    project {
+        languageLevel = JavaVersion.VERSION_11
+    }
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
+subprojects {
+    group 'ru.devalurum'
+    version '1.0'
+
+    repositories {
+        mavenCentral()
+    }
+
+    apply plugin: "io.spring.dependency-management"
+    dependencyManagement {
+        dependencies {
+            imports {
+                mavenBom("org.springframework.boot:spring-boot-dependencies:2.7.2")
+            }
+            dependency "io.projectreactor:reactor-test:3.1.0.RELEASE"
+            dependency "org.testcontainers:junit-jupiter:1.16.2"
+            dependency "org.testcontainers:kafka:1.16.2"
+        }
+    }
+
+    configurations.all {
+        exclude module: 'slf4j-log4j12'
+    }
+
+    tasks.withType(JavaCompile) {
+        options.compilerArgs = [
+                '-Amapstruct.defaultComponentModel=spring'
+        ]
+        options.encoding = 'UTF-8'
+    }
+
+    task managedVersions {
+        doLast {
+            dependencyManagement.managedVersions.each {
+                println it
+            }
+        }
+    }
+}

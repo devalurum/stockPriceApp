@@ -1,0 +1,20 @@
+server:
+  port: 80
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/stock_system
+    username: postgres
+    password: 12345
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.spatial.dialect.postgis.PostgisPG95Dialect
+    open-in-view: true
+    hibernate:
+      ddl-auto: create # replace after first run on "none" or "update"
+    show-sql: true
+    generate-ddl: true
+    properties:
+      hibernate:
+        format_sql: true
+        generate_statistics: false

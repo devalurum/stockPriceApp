@@ -1,0 +1,51 @@
+server:
+  port: 8082
+  servlet:
+    context-path: /stock-stat-app
+
+spring:
+  profiles:
+    active:
+  kafka:
+    bootstrap-servers: 10.10.0.184:9092
+    consumer:
+      auto-offset-reset: earliest
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/stock_system
+    username: postgres
+    password: 12345
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+    default-schema: public
+
+management:
+  server:
+    port: 8092
+  endpoints:
+    enabled-by-default: false
+  endpoint:
+    health:
+      enabled: true
+      probes:
+        enabled: true
+
+kafka:
+  server: localhost:9092
+  general:
+    topic:
+      name: tickers
+      group:
+        id: group_id_2
+  stat_request:
+    topic:
+      name: stat_req
+      group:
+        id: group_id
+  stat_answer:
+    topic:
+      name: stat_ans
+      group:
+        id: group_id

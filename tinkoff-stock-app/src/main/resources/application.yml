@@ -1,0 +1,70 @@
+server:
+  port: 8081
+  servlet:
+    context-path: /tinkoff-stock-app
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: tinkoff-stock-app
+  config:
+    import: optional:file:.env[.properties]
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      auto-offset-reset: earliest
+  cache:
+    cache-names: stock
+    caffeine:
+      spec: expireAfterAccess=5m
+
+management:
+  server:
+    port: 8091
+  endpoints:
+    enabled-by-default: false
+  endpoint:
+    health:
+      enabled: true
+      probes:
+        enabled: true
+
+
+kafka:
+  server: localhost:9092
+  general:
+    topic:
+      name: tickers
+      group:
+        id: group_id
+  stock:
+    topic:
+      name: stocks
+      group:
+        id: group_id
+  log:
+    topic:
+      name: log
+      group:
+        id: group_id
+
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /rest-api-docs
+  swagger-ui:
+    path: /swagger-ui
+
+app:
+  tinkoff:
+    token: ${TINKOFF_TOKEN}
+
+.env:
+  prefix: ""
+  directory: "./config"
+  ignoreIfMalformed: true
+  ignoreIfMissing: true
+  systemProperties: true
+

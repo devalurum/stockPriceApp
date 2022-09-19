@@ -1,0 +1,29 @@
+jib {
+
+    from {
+        //image = 'amazoncorretto:11-alpine3.12'
+        //image = 'bellsoft/liberica-openjdk-alpine-musl:11'
+        image = 'openjdk:11-jre-slim-buster'
+
+        auth {
+            username = DOCKERHUB_USERNAME
+            password = DOCKERHUB_PASSWORD
+        }
+    }
+
+    to {
+        tags = ["v1", "latest"]
+        image = "devalurum/tinkoff-stock-app"
+
+        auth {
+            username = DOCKERHUB_USERNAME
+            password = DOCKERHUB_PASSWORD
+        }
+    }
+
+    container {
+        creationTime = 'USE_CURRENT_TIMESTAMP'
+        ports = ['8081']
+        args = ['']
+    }
+}

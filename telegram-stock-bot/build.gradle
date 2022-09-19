@@ -1,0 +1,97 @@
+plugins {
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+    id 'java'
+    id 'java-library'
+    id 'com.google.cloud.tools.jib' version '3.3.0'
+}
+
+apply from: 'jib.gradle'
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+ext {
+    springEnvVersion = "2.5.4"
+    javaxValidVersion = "2.0.1.Final"
+    javaxPersistenceVersion = "2.2"
+    gsonVersion = "2.9.0"
+    lombokMapstructBindingVersion = "0.2.0";
+    mapstructVersion = "1.5.2.Final"
+    lombokVersion = "1.18.24"
+    openApiVersion = "1.6.9"
+    jacksonDatatypeJtsVersion = "1.2.10"
+    postgresVersion = "42.3.6"
+    springDataCommonsVersion = "2.7.0"
+    kafkaVersion = "2.8.5"
+    telegramBotVersion = "6.0.1"
+    hibernateVersion = "5.5.5.Final"
+    hibernateTypesVersion = "2.4.3"
+    locationTechVersion = "1.18.2"
+    telegramBotStarterVersion = "6.1.0"
+    emojiParserVersion = "5.1.1"
+    jacksonDatatypeVersion = "2.8.8"
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    implementation "org.springframework.data:spring-data-commons:${springDataCommonsVersion}"
+    implementation "org.springframework.kafka:spring-kafka:${kafkaVersion}"
+
+    implementation "org.hibernate:hibernate-core:$hibernateVersion"
+    implementation "org.hibernate:hibernate-spatial:$hibernateVersion"
+
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonDatatypeVersion}"
+
+    implementation "com.vladmihalcea:hibernate-types-52:$hibernateTypesVersion"
+    implementation "org.locationtech.jts:jts-core:$locationTechVersion"
+
+    implementation "org.telegram:telegrambots-abilities:${telegramBotVersion}"
+    implementation "org.telegram:telegrambots-spring-boot-starter:${telegramBotVersion}"
+
+    implementation "com.vdurmont:emoji-java:${emojiParserVersion}"
+
+    implementation "me.paulschwarz:spring-dotenv:${springEnvVersion}"
+
+    implementation "org.mapstruct:mapstruct:$mapstructVersion",
+            "org.projectlombok:lombok:$lombokVersion",
+            "org.projectlombok:lombok-mapstruct-binding:$lombokMapstructBindingVersion"
+
+
+    runtimeOnly "org.postgresql:postgresql:${postgresVersion}"
+
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}",
+            "org.projectlombok:lombok:$lombokVersion",
+            "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs = [
+            '-Amapstruct.defaultComponentModel=spring'
+    ]
+}
+
+tasks.named("bootJar") {
+    archiveName = "$baseName.$extension"
+}
+
+tasks.jib.dependsOn(bootJar)
+tasks.jibDockerBuild.dependsOn(bootJar)
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

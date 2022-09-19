@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5434/stock_system
+    username: postgres
+    password: 12345
+  flyway:
+    baseline-on-migrate: true
