@@ -6,7 +6,7 @@ stages:
 build-job:
   stage: docker-hub
   script:
-    - ./gradlew :telegram-stock-bot:jib -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD" -PTELEGRAM_TOKEN="$env:$TELEGRAM_TOKEN" -PTINKOFF_TOKEN="$env:$TINKOFF_TOKEN"
+    - ./gradlew :telegram-stock-bot:jib -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD" -PTELEGRAM_TOKEN="$env:TELEGRAM_TOKEN" -PTINKOFF_TOKEN="$env:TINKOFF_TOKEN"
 
 
 # create-kind-cluster:
