@@ -7,8 +7,6 @@ stages:
 build-job:
   stage: docker-hub
   script:
-    - echo %DOCKERHUB_USERNAME%
-    - echo "%DOCKERHUB_USERNAME%"
     - echo "$env:DOCKERHUB_USERNAME"
     - ./gradlew :stock-app-statistic:jib -PDOCKERHUB_USERNAME=$env:DOCKERHUB_USERNAME -PDOCKERHUB_PASSWORD=$env:DOCKERHUB_PASSWORD
 
