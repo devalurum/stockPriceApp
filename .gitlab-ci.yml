@@ -1,0 +1,28 @@
+stages:
+  - docker-hub
+#   - kind-cluster
+#   - deploy
+
+
+build-job:
+  stage: docker-hub
+  script:
+    - ./gradlew :stock-app-statistic:jib -PDOCKERHUB_USERNAME=${DOCKERHUB_USERNAME} -PDOCKERHUB_PASSWORD=${DOCKERHUB_PASSWORD}
+
+
+    #-PTELEGRAM_TOKEN=$TELEGRAM_TOKEN -PTINKOFF_TOKEN=$TINKOFF_TOKEN
+
+
+# create-kind-cluster:
+#   stage: kind-cluster-hub
+#   script:
+#     - kubectl cluster-info --context kind-kind
+#     - if [$message = ]
+#     - kind create cluster --config=kubernetes/kind-config.yaml
+
+# deploy-job:
+#   stage: deploy
+#   environment: production
+#   script:
+#     - echo "Deploying application..."
+#     - echo "Application successfully deployed."

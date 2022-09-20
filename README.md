@@ -24,13 +24,14 @@
 - Gradle
 - Docker
 - Kubernetes (Kind)
-- GitLab CI
+- GitLab CI (GitLab-Runner locality)
 
 ## Сборка приложения и деплой
 **Необходимо:**
 1. Java 11+
 2. Docker
 3. Kubernetes
+
 ```shell script
 # запустить под админом cmd.exe 
 # создать папку для 'kind'
@@ -38,9 +39,11 @@ mkdir C:\kind
 # Установить kind на Windows 64bit (Для других ОС https://kind.sigs.k8s.io/docs/user/quick-start/#installing-from-release-binaries)
 curl -Lo C:\kind\kind.exe https://kind.sigs.k8s.io/dl/v0.11.1/kind-windows-amd64
 # установить kind в системную переменную %PATH%. WARNING: This solution may be destructive to your PATH
-setx /M path '%PATH%;C:\kind\'
+setx /M path "%PATH%;C:\kind\ "
 # подключение плагина Ingress NGINX
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+
+curl -Lo C:\kind\kind.exe https://kind.sigs.k8s.io/dl/v0.11.1/kind-windows-amd64
 
 # Склонировать проект к себе
 git clone https://github.com/devalurum/stockPriceApp.git
@@ -81,6 +84,8 @@ kubectl apply -f tinkoff-stock-app/service_tinkoff-stock-app.yaml
 kubectl apply -f tinkoff-stock-app/ingress_tinkoff-stock-app.yaml
 kubectl apply -f tinkoff-stock-app/deploy_tinkoff-stock-app.yaml
 # go to telegram bot or http://localhost:8880/tinkoff-stock-app/swagger-ui/index.html
+curl -Lo C:\GitLab-Runner\gitlab-runner-windows-amd64.exe https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-windows-amd64.exe
+
 ```
 
 ## Todo:
