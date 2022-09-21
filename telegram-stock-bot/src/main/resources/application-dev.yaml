@@ -3,7 +3,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/stock_system
+    url: jdbc:postgresql://host.docker.internal:5432/stock_system
     username: postgres
     password: 12345
   jpa:

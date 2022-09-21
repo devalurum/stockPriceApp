@@ -1,8 +1,7 @@
 jib {
+    String keyToken = 'TINKOFF_TOKEN'
 
     from {
-        //image = 'amazoncorretto:11-alpine3.12'
-        //image = 'bellsoft/liberica-openjdk-alpine-musl:11'
         image = 'openjdk:11-jre-slim-buster'
 
         auth {
@@ -24,6 +23,11 @@ jib {
     container {
         creationTime = 'USE_CURRENT_TIMESTAMP'
         ports = ['8081']
-        args = ['']
+
+        if (project.hasProperty(keyToken)) {
+            String token = project.property(keyToken)
+            def map = [(keyToken): token]
+            container.environment(map)
+        }
     }
 }

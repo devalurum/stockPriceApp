@@ -1,4 +1,5 @@
 jib {
+    String keyToken = 'TELEGRAM_TOKEN'
 
     from {
         image = 'openjdk:11-jre-slim-buster'
@@ -22,6 +23,10 @@ jib {
     container {
         creationTime = 'USE_CURRENT_TIMESTAMP'
         ports = ['8080']
-        args = ['']
+        if (project.hasProperty(keyToken)) {
+            String token = project.property(keyToken)
+            def map = [(keyToken): token]
+            container.environment(map)
+        }
     }
 }

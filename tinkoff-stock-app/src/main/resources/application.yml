@@ -59,7 +59,7 @@ springdoc:
 
 app:
   tinkoff:
-    token: ${TINKOFF_TOKEN}
+    token: ${TINKOFF_TOKEN:null}
 
 .env:
   prefix: ""
