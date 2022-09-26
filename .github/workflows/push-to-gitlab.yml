@@ -17,7 +17,7 @@ jobs:
 
     - name: Push To Gitlab
       env:
-        token: $GITLAB_TOKEN
+        token: ${{ secrets.GITLAB_TOKEN }}
       run: |
         echo Starting to push repo to gitlab
         echo $GITLAB_TOKEN
