@@ -28,11 +28,11 @@ jobs:
         echo Starting to push repo to gitlab
         echo ${{ secrets.GITLAB_TOKEN }}
         echo "${{ secrets.GITLAB_TOKEN }}"
-        echo "${{ secret.GITLAB_TOKEN }}"
         echo ${token}
         echo "${token}"
         echo $token
         echo ${env.token}
+        echo ${{ env.token }}
         git config user.name "devalurum"
         git config user.email "sahaheh@mail.ru"
         git remote set-url gitlab "https://oauth2:${token}@gitlab.com/devalurum/stockPriceApp.git"
