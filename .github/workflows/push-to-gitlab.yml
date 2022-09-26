@@ -31,8 +31,6 @@ jobs:
         echo ${token}
         echo "${token}"
         echo $token
-        echo ${env.token}
-        echo ${{ env.token }}
         git config user.name "devalurum"
         git config user.email "sahaheh@mail.ru"
         git remote set-url gitlab "https://oauth2:${token}@gitlab.com/devalurum/stockPriceApp.git"
