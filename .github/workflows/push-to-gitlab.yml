@@ -2,9 +2,15 @@ name: push-to-gitlab
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
   pull_request:
-    branches: [ master ]
+    types:
+      - opened
+      - edited
+      - reopened
+    branches:
+      - main
 
 jobs:
   push-to-gitlub:
@@ -23,7 +29,6 @@ jobs:
         echo ${{ secrets.GITLAB_TOKEN }}
         echo "${{ secrets.GITLAB_TOKEN }}"
         echo "${{ secret.GITLAB_TOKEN }}"
-        echo ${{ secret.GITLAB_TOKEN }}
         echo ${token}
         echo "${token}"
         echo $token
