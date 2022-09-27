@@ -15,8 +15,9 @@ stages:
 create-kind-cluster:
   stage: kind-cluster
   script:
-    - $message = (kubectl cluster-info --context kind-kind 2>&1)
-    - if($message -like 'error*'){kind create cluster --config=kubernetes/kind-config.yaml}
+    - kubectl cluster-info --context kind-kind
+    #- $message = (kubectl cluster-info --context kind-kind 2>&1)
+    #- if($message -like 'error*'){kind create cluster --config=kubernetes/kind-config.yaml}
 
 # ToDo: возможно тут нужна какая-то логика на проверку изменений в конфигах,
 # но для демонстрации пойдёт и такой вариант.
