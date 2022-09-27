@@ -1,6 +1,6 @@
 stages:
 #  - docker-hub
-#  - kind-cluster
+  - kind-cluster
   - deploy
 
 #push-to-docker-hub:
@@ -13,13 +13,13 @@ stages:
 #    - ./gradlew :telegram-stock-bot:jib -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD" -PTELEGRAM_TOKEN="$env:TELEGRAM_TOKEN"
 #    - ./gradlew :telegram-stock-bot:jib -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD" -PTINKOFF_TOKEN="$env:TINKOFF_TOKEN"
 
-#create-kind-cluster:
-#  stage: kind-cluster
-#  allow_failure: false
-#  script:
-#    - set message (kubectl cluster-info --context kind-kind 2>&1)
-#    - get-variable message -valueOnly
-#    - if((get-variable message -valueOnly) -like 'error*'){kind create cluster --config=kubernetes/kind-config.yaml}else{echo "Кластер готов."}
+create-kind-cluster:
+  stage: kind-cluster
+  allow_failure: false
+  script:
+    - set message (kind get clusters 2>&1)
+    - get-variable message -valueOnly
+    - if((get-variable message -valueOnly) -like 'No kind clusters found.'){kind create cluster --config=kubernetes/kind-config.yaml}else{echo "Кластер готов."}
 
 # ToDo: возможно тут нужна какая-то логика на проверку изменений в конфигах,
 # но для демонстрации пойдёт и такой вариант.
