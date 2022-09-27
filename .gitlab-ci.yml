@@ -43,3 +43,4 @@ deploy-in-kubernetes:
     - kubectl apply -f tinkoff-stock-app/service_tinkoff-stock-app.yaml
     - kubectl apply -f tinkoff-stock-app/ingress_tinkoff-stock-app.yaml
     - kubectl apply -f tinkoff-stock-app/deploy_tinkoff-stock-app.yaml
+    - kubectl get pods
