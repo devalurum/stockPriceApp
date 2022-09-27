@@ -31,7 +31,7 @@ spec:
             - name: KAFKA_HOST
               value: kafka-service
             - name: spring.jpa.hibernate.ddl-auto
-              value: update
+              value: create # заменить на update после первого деплоя
           readinessProbe:
             failureThreshold: 3
             httpGet:

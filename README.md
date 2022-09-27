@@ -24,27 +24,55 @@
 - Gradle
 - Docker
 - Kubernetes (Kind)
-- GitLab CI (GitLab-Runner locality)
+- GitLab CI (GitLab-Runner locality) + Github Actions 
 
 ## Сборка приложения и деплой
 **Необходимо:**
 1. Java 11+
 2. Docker
 3. Kubernetes
+4. Kind (Locally cluster)
+5. GitLab-Runner
 
+### Установка kind
 ```shell script
 # запустить под админом cmd.exe 
 # создать папку для 'kind'
 mkdir C:\kind
 # Установить kind на Windows 64bit (Для других ОС https://kind.sigs.k8s.io/docs/user/quick-start/#installing-from-release-binaries)
-curl -Lo C:\kind\kind.exe https://kind.sigs.k8s.io/dl/v0.11.1/kind-windows-amd64
+curl -Lo C:\kind\kind.exe https://kind.sigs.k8s.io/dl/v0.11.1/kind-windows-amd64 --ssl-no-revoke
 # установить kind в системную переменную %PATH%. WARNING: This solution may be destructive to your PATH
 setx /M path "%PATH%;C:\kind\ "
 # подключение плагина Ingress NGINX
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+```
 
-curl -Lo C:\kind\kind.exe https://kind.sigs.k8s.io/dl/v0.11.1/kind-windows-amd64
+### Установка gitlab-runner
+```shell script
+# создать папку для 'gitlab-runner'
+mkdir C:\GitLab-Runner
+# Установить GitLab-Runner на Windows 64bit
+curl -Lo C:\GitLab-Runner\gitlab-runner.exe https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-windows-amd64.exe --ssl-no-revoke
+# установить gitlab-runner в системную переменную %PATH%. WARNING: This solution may be destructive to your PATH
+setx /M path "%PATH%;C:\GitLab-Runner\ "
+# запуск установки gitlab-runner
+gitlab-runner install
+gitlab-runner register
+# ввод адреса
+https://gitlab.com/
+# ввод токена
+<ТОКЕН РЕПОЗИТОРИЯ НА GITLAB>
+# название gitlab-runner'a
+<НАЗВАНИЕ>
+# теги
+# ввод мода исполнения 
+shell
+# запуск gitlab-runner'a
+gitlab-runner start
+```
 
+### Сборка без CI/CD
+```shell script
 # Склонировать проект к себе
 git clone https://github.com/devalurum/stockPriceApp.git
 
@@ -54,7 +82,7 @@ git clone https://github.com/devalurum/stockPriceApp.git
 # 'resources/config/.env' с переменной TELEGRAM_TOKEN=<ВАШ_ТОКЕН_ОТ_TELEGRAM_БОТА>
 # создать файл .env в модуле tinkoff-stock-app в ресурсах:
 # 'resources/config/.env' с переменной TINKOFF_TOKEN=<ВАШ_ТОКЕН_ОТ_TINKOFF_API>
-# указать свой никнейм в docker-hub для публикации  
+# нужно указать свой никнейм в docker-hub в тасках jib для публикации  
 
 # Сборка (build), упаковка в docker-контейнеры и публикация в docker-hub
 gradlew jib
@@ -84,8 +112,6 @@ kubectl apply -f tinkoff-stock-app/service_tinkoff-stock-app.yaml
 kubectl apply -f tinkoff-stock-app/ingress_tinkoff-stock-app.yaml
 kubectl apply -f tinkoff-stock-app/deploy_tinkoff-stock-app.yaml
 # go to telegram bot or http://localhost:8880/tinkoff-stock-app/swagger-ui/index.html
-curl -Lo C:\GitLab-Runner\gitlab-runner-windows-amd64.exe https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-windows-amd64.exe
-
 ```
 
 ## Todo:
