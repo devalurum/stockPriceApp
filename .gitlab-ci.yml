@@ -15,7 +15,7 @@ create-kind-cluster:
   stage: kind-cluster
   script:
     - "kubectl cluster-info --context kind-kind"
-    - "if [$message == 'error: context \"kind-kind\" does not exist' || $message == 'Error in configuration: context was not found for specified context: kind-kind' ]; then echo create-cluster; else echo continue; fi""
+    - "if [$message == 'error: context \"kind-kind\" does not exist' || $message == 'Error in configuration: context was not found for specified context: kind-kind' ]; then echo create-cluster; else echo continue; fi"
 
     #- kind create cluster --config=kubernetes/kind-config.yaml
 
