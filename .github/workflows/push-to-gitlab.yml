@@ -10,7 +10,7 @@ on:
       - edited
       - reopened
     branches:
-      - main
+      - master
 
 jobs:
   push-to-gitlub:

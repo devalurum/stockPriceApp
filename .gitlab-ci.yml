@@ -1,6 +1,6 @@
 stages:
   - docker-hub
-#   - kind-cluster
+  - kind-cluster
 #   - deploy
 
 build-job:
@@ -11,12 +11,13 @@ build-job:
     - ./gradlew :telegram-stock-bot:jib -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD" -PTINKOFF_TOKEN="$env:TINKOFF_TOKEN"
 
 
-# create-kind-cluster:
-#   stage: kind-cluster-hub
-#   script:
-#     - kubectl cluster-info --context kind-kind
-#     - if [$message = ]
-#     - kind create cluster --config=kubernetes/kind-config.yaml
+create-kind-cluster:
+  stage: kind-cluster
+  script:
+    - "kubectl cluster-info --context kind-kind"
+    - "if [$message == 'error: context \"kind-kind\" does not exist' || $message == 'Error in configuration: context was not found for specified context: kind-kind' ]; then echo create-cluster; else echo continue; fi""
+
+    #- kind create cluster --config=kubernetes/kind-config.yaml
 
 # deploy-job:
 #   stage: deploy
