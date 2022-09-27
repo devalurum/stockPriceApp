@@ -19,8 +19,8 @@ create-kind-cluster:
   script:
     - set message (kubectl cluster-info --context kind-kind 2>&1)
     - get-variable message -valueOnly
-    - if((get-variable message -valueOnly) -like 'error*' -Or (get-variable message -valueOnly) -like 'unable*'){kind create cluster --config=kubernetes/kind-config.yaml}else{echo "Кластер готов."}
     - Get-Location
+    - if((get-variable message -valueOnly) -like 'error*'){kind create cluster --config=kubernetes/kind-config.yaml}else{echo "Кластер готов."}
 
 ## ToDo: возможно тут нужна какая-то логика на проверку изменений в конфигах,
 ## но для демонстрации пойдёт и такой вариант.
