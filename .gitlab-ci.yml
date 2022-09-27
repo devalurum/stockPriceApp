@@ -1,7 +1,7 @@
 stages:
-  - docker-hub
+#  - docker-hub
   - kind-cluster
-  - deploy
+#  - deploy
 
 #push-to-docker-hub:
 #  stage: docker-hub
