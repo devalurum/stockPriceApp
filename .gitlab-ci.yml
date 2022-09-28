@@ -9,9 +9,9 @@ build:
   allow_failure: false
   script:
     # ToDo: как допишу тесты, добавить ещё однин стейдж 'test'
-    - ./gradlew :stock-app-statistic:build -x test
-    - ./gradlew :telegram-stock-bot:build -x test
-    - ./gradlew :telegram-stock-bot:build -x test
+    - ./gradlew :stock-app-statistic:build -x test -x jib
+    - ./gradlew :telegram-stock-bot:build -x test -x jib
+    - ./gradlew :telegram-stock-bot:build -x test -x jib
 
 push-to-docker-hub:
   stage: package
