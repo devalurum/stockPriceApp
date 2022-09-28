@@ -1,5 +1,8 @@
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
+networking:
+  ipFamily: ipv4
+  apiServerAddress: "0.0.0.0"
 nodes:
   - role: control-plane
     kubeadmConfigPatches:
@@ -12,4 +15,5 @@ nodes:
       - containerPort: 80
         hostPort: 8880
         protocol: TCP
+        listenAddress: "0.0.0.0"
   - role: worker

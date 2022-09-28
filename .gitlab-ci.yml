@@ -25,6 +25,8 @@ create-kind-cluster:
 # но для демонстрации пойдёт и такой вариант.
 deploy-in-kubernetes:
   stage: deploy
+  only:
+    - master
   script:
     - cd kubernetes
     # Импорт общей конфигураций
