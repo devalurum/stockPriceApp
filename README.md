@@ -55,20 +55,15 @@ mkdir C:\GitLab-Runner
 curl -Lo C:\GitLab-Runner\gitlab-runner.exe https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-windows-amd64.exe --ssl-no-revoke
 # установить gitlab-runner в системную переменную %PATH%. WARNING: This solution may be destructive to your PATH
 setx /M path "%PATH%;C:\GitLab-Runner\ "
+cd C:\GitLab-Runner
 # запуск установки gitlab-runner
 gitlab-runner install
-gitlab-runner register
-# ввод адреса
-https://gitlab.com/
-# ввод токена
-<ТОКЕН РЕПОЗИТОРИЯ НА GITLAB>
-# название gitlab-runner'a
-<НАЗВАНИЕ>
-# теги
-# ввод мода исполнения 
-shell
-# запуск gitlab-runner'a
+# регистрация gitlab-runner
+gitlab-runner register --non-interactive --name <НАЗВАНИЕ> --url https://gitlab.com/ --registration-token <ТОКЕН РЕПОЗИТОРИЯ ИЗ GITLAB>  --executor shell --shell <powershell|pwsh>
+# запуск сервиса gitlab-runner
 gitlab-runner start
+# проверка запущен ли gitlab-runner
+gitlab-runner status
 ```
 
 ### Сборка без CI/CD
