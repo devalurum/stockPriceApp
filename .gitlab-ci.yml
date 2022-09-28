@@ -1,17 +1,25 @@
 stages:
-#  - docker-hub
+  - build
+  - package
   - kind-cluster
   - deploy
 
-#push-to-docker-hub:
-#  stage: docker-hub
-#  allow_failure: false
-#  script:
-#    # перед таском 'jib' вызывается build
-#    # ToDo: разделить стейджи на build, test, push-to-docker-hub
-#    - ./gradlew :stock-app-statistic:jib -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
-#    - ./gradlew :telegram-stock-bot:jib -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD" -PTELEGRAM_TOKEN="$env:TELEGRAM_TOKEN"
-#    - ./gradlew :telegram-stock-bot:jib -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD" -PTINKOFF_TOKEN="$env:TINKOFF_TOKEN"
+build:
+  stage: build
+  allow_failure: false
+  script:
+    # ToDo: как допишу тесты, добавить ещё однин стейдж 'test'
+    - ./gradlew :stock-app-statistic:build -x test
+    - ./gradlew :telegram-stock-bot:build -x test
+    - ./gradlew :telegram-stock-bot:build -x test
+
+push-to-docker-hub:
+  stage: build
+  allow_failure: false
+  script:
+    - ./gradlew :stock-app-statistic:jib -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
+    - ./gradlew :telegram-stock-bot:jib -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD" -PTELEGRAM_TOKEN="$env:TELEGRAM_TOKEN"
+    - ./gradlew :telegram-stock-bot:jib -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD" -PTINKOFF_TOKEN="$env:TINKOFF_TOKEN"
 
 create-kind-cluster:
   stage: kind-cluster

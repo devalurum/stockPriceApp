@@ -2,13 +2,6 @@ package ru.devalurum.telegramstockbot.telegrambot;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ru.devalurum.telegramstockbot.exception.TelegramBotException;
-import ru.devalurum.telegramstockbot.service.UserService;
-import ru.devalurum.telegramstockbot.service.kafka.KafkaProducerService;
-import ru.devalurum.telegramstockbot.settings.TelegramSettings;
-import ru.devalurum.telegramstockbot.telegrambot.strategy.TelegramAnswerStrategy;
-import ru.devalurum.telegramstockbot.telegrambot.strategy.TelegramCommand;
-import ru.devalurum.telegramstockbot.utils.Constants;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
@@ -23,6 +16,13 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ru.devalurum.telegramstockbot.exception.TelegramBotException;
+import ru.devalurum.telegramstockbot.service.UserService;
+import ru.devalurum.telegramstockbot.service.kafka.KafkaProducerService;
+import ru.devalurum.telegramstockbot.settings.TelegramSettings;
+import ru.devalurum.telegramstockbot.telegrambot.strategy.TelegramAnswerStrategy;
+import ru.devalurum.telegramstockbot.telegrambot.strategy.TelegramCommand;
+import ru.devalurum.telegramstockbot.utils.Constants;
 
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
@@ -149,6 +149,8 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @PostConstruct
     private void initCommands() {
+        log.info("telegram-token: {}", getBotToken());
+
         List<BotCommand> botCommandList = Arrays.stream(TelegramCommand.values())
                 .filter(command -> command != TelegramCommand.NOT_FOUND)
                 .map(command -> new BotCommand(Constants.FORWARD_SLASH + command.getCommandAsString(),
