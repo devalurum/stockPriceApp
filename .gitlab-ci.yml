@@ -47,19 +47,19 @@ deploy-in-kubernetes:
     # Импорт общей конфигураций
     - kubectl apply -f config/stock-app-config.yaml
     # Деплой kafka + zookeeper
-    - kubectl apply -f kafka/zookeeper.yaml
-    - kubectl apply -f kafka/kafka.yaml
-    # Деплой PostgreSQL + PostGIS
-    - kubectl apply -f db/postgres-config.yaml
-    - kubectl apply -f db/storage_postgres.yaml
-    - kubectl apply -f db/postgres.yaml
-    # Деплой микросервиса с подсчётом статистики
-    - kubectl apply -f stock-app-statistic/service_stock-app-stat.yaml
-    - kubectl apply -f stock-app-statistic/deploy_stock-app-stat.yaml
-    # Деплой микросервиса с телеграм-ботом
-    - kubectl apply -f telegram-stock-bot/service_telegram-stock-bot.yaml
-    - kubectl apply -f telegram-stock-bot/deploy_telegram-stock-bot.yaml
-    # Деплой микросервиса с tinkoff API
-    - kubectl apply -f tinkoff-stock-app/service_tinkoff-stock-app.yaml
-    - kubectl apply -f tinkoff-stock-app/ingress_tinkoff-stock-app.yaml
-    - kubectl apply -f tinkoff-stock-app/deploy_tinkoff-stock-app.yaml
+#    - kubectl apply -f kafka/zookeeper.yaml
+#    - kubectl apply -f kafka/kafka.yaml
+#    # Деплой PostgreSQL + PostGIS
+#    - kubectl apply -f db/postgres-config.yaml
+#    - kubectl apply -f db/storage_postgres.yaml
+#    - kubectl apply -f db/postgres.yaml
+#    # Деплой микросервиса с подсчётом статистики
+#    - kubectl apply -f stock-app-statistic/service_stock-app-stat.yaml
+#    - kubectl apply -f stock-app-statistic/deploy_stock-app-stat.yaml
+#    # Деплой микросервиса с телеграм-ботом
+#    - kubectl apply -f telegram-stock-bot/service_telegram-stock-bot.yaml
+#    - kubectl apply -f telegram-stock-bot/deploy_telegram-stock-bot.yaml
+#    # Деплой микросервиса с tinkoff API
+#    - kubectl apply -f tinkoff-stock-app/service_tinkoff-stock-app.yaml
+#    - kubectl apply -f tinkoff-stock-app/ingress_tinkoff-stock-app.yaml
+#    - kubectl apply -f tinkoff-stock-app/deploy_tinkoff-stock-app.yaml
