@@ -14,7 +14,7 @@ build:
     - ./gradlew :telegram-stock-bot:build -x test
 
 push-to-docker-hub:
-  stage: build
+  stage: package
   allow_failure: false
   script:
     - ./gradlew :stock-app-statistic:jib -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
@@ -28,7 +28,7 @@ create-kind-cluster:
     - set message (kind get clusters 2>&1)
     - get-variable message -valueOnly
     # ToDo: разобраться, почему не работает многострочный символ '>' (folded), может из-за powershell
-    - if((get-variable message -valueOnly) -like 'No kind clusters found.' -Or (get-variable message -valueOnly) -like 'error*'){kind create cluster --config=kubernetes/kind-config.yaml}else{echo "Кластер готов."}
+    - if((get-variable message -valueOnly) -like 'No kind clusters found.' -Or (get-variable message -valueOnly) -like 'error*'){kind create cluster --config=kubernetes/kind-config.yaml --kubeconfig $HOME/.kube/config}else{echo "Кластер готов."}
 
 
 # ToDo: возможно тут нужна какая-то логика на проверку изменений в конфигах,
