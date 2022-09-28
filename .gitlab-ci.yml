@@ -1,7 +1,7 @@
 stages:
 #  - docker-hub
   - kind-cluster
-#  - deploy
+  - deploy
 
 variables:
   CI_KIND_CLUSTER_NAME: kind-kind
