@@ -27,9 +27,8 @@ create-kind-cluster:
   script:
     - set message (kind get clusters 2>&1)
     - get-variable message -valueOnly
-    - echo $HOME
     # ToDo: разобраться, почему не работает многострочный символ '>' (folded), может из-за powershell
-    - if((get-variable message -valueOnly) -like 'No kind clusters found.' -Or (get-variable message -valueOnly) -like 'error*'){kind create cluster --config=kubernetes/kind-config.yaml --kubeconfig $HOME/.kube/config}else{echo "Кластер готов."}
+    - if((get-variable message -valueOnly) -like 'No kind clusters found.' -Or (get-variable message -valueOnly) -like 'error*'){kind create cluster --config=kubernetes/kind-config.yaml --kubeconfig C:/Users/AUrum/.kube/config}else{echo "Кластер готов."}
 
 
 # ToDo: возможно тут нужна какая-то логика на проверку изменений в конфигах,
