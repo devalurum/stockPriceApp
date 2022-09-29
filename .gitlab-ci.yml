@@ -48,9 +48,7 @@ deploy-in-kubernetes:
   before_script:
     - cd kubernetes
     - $env:KUBECONFIG = "$env:KUBE_HOME/.kube/config"
-    # Установка INGRESS плагина (NGINX)
-    - kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
-  script:
+    script:
     # Импорт общей конфигураций
     - kubectl apply -f config/stock-app-config.yaml
     # Деплой kafka + zookeeper
@@ -71,4 +69,6 @@ deploy-in-kubernetes:
     - kubectl apply -f tinkoff-stock-app/ingress_tinkoff-stock-app.yaml
     - kubectl apply -f tinkoff-stock-app/deploy_tinkoff-stock-app.yaml
   after_script:
+    # Установка INGRESS плагина (NGINX)
+    - kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
     - kubectl get pods
