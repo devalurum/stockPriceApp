@@ -8,7 +8,7 @@ build:
   stage: build
   allow_failure: false
   script:
-    # ToDo: как допишу тесты, добавить ещё однин стейдж 'test'
+    # ToDo: как допишу тесты, добавить ещё одни стейдж 'test'
     - ./gradlew :stock-app-statistic:build -x test -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
     - ./gradlew :telegram-stock-bot:build -x test -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
     - ./gradlew :telegram-stock-bot:build -x test -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
@@ -39,6 +39,8 @@ deploy-in-kubernetes:
     - master
   script:
     - cd kubernetes
+    - echo "$env:KUBECONFIG"
+    - $env:KUBECONFIG = "C:/Users/AUrum/.kube/config"
     # Импорт общей конфигураций
     - kubectl apply -f config/stock-app-config.yaml
     # Деплой kafka + zookeeper
