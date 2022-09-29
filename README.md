@@ -115,6 +115,7 @@ kubectl apply -f tinkoff-stock-app/deploy_tinkoff-stock-app.yaml
 - Придумать единую точку сбора ошибок (на подобии @RestControllerAdvice) для kafka и отправке юзеру.
 - Реализовать логирование и мониторинг с помощью Grafana Loki/Prometheus + Spring Actuator.
 - Переделать кэширование с дефолтого Spring Caching + Caffeine, на Redis.
+- Решить конликт в Swagger UI с портами.
 - Рефакторинг.
 - \* Попробовать (необязательно) настроить маппинг сообщений через kafka не через ObjectMapper,
 а с помощью сопоставления типов.

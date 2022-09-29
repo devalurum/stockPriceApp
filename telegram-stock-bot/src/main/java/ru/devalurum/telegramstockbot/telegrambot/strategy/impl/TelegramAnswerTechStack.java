@@ -18,7 +18,7 @@ public class TelegramAnswerTechStack implements TelegramAnswerStrategy {
     private static final String TECH_STACK = "Java 11, Spring Boot, Spring Data JPA/JDBC, Spring Kafka," +
             "Spring Cache (Caffeine), Dotenv for Spring (support .env files), Lombok, TelegramBots (Spring Boot Starter)," +
             "MapStruct, Java SDK for Tinkoff Invest API, Gradle, Docker, PostgreSQL (+PostGIS), Flyway," +
-            "Swagger (OpenAPI 3.0), Kubernetes (Kind), GitLab CI";
+            "Swagger (OpenAPI 3.0), Kubernetes (Kind), GitLab CI/CD (gitlab-runner, shell)";
 
     private static final String MORE =
             "Резюме на [Habr.Career](https://career.habr.com/devalurum). \n"

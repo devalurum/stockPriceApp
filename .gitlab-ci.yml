@@ -3,19 +3,19 @@ stages:
   - package
   - kind-cluster
   - deploy
+# ToDo: Запустить gitlab-runner под текущим пользователем (не локальным). Ошибка: 1069
 
-  # ToDo: запустить gitlab-runner под текущим пользователем (не локальным). Ошибка: 1069
-.build:
+build:
   stage: build
   allow_failure: false
   script:
-    # ToDo: как допишу тесты, добавить ещё одни стейдж 'test'
+    # ToDo: Как допишу тесты, добавить ещё одни стейдж 'test'
     - ./gradlew :stock-app-statistic:build -x test -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
     - ./gradlew :telegram-stock-bot:build -x test -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
     - ./gradlew :tinkoff-stock-app:build -x test -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
     - ./gradlew.bat --stop
 
-.push-to-docker-hub:
+push-to-docker-hub:
   stage: package
   allow_failure: false
   script:
@@ -34,7 +34,7 @@ create-kind-cluster:
   script:
     - set message (kind get clusters 2>&1)
     - get-variable message -valueOnly
-    # ToDo: разобраться, почему не работает многострочный символ '>' (folded), может из-за powershell
+    # ToDo: Разобраться, почему не работает многострочный символ '>' (folded), может из-за powershell
     - if((get-variable message -valueOnly) -like 'No kind clusters found.' -Or (get-variable message -valueOnly) -like 'error*'){kind create cluster --config=kubernetes/kind-config.yaml --kubeconfig $env:KUBE_HOME/.kube/config}else{echo "Кластер готов."}
   after_script:
     - kind get clusters
@@ -49,6 +49,8 @@ deploy-in-kubernetes:
     - cd kubernetes
     - $env:KUBECONFIG = "$env:KUBE_HOME/.kube/config"
   script:
+    # Установка INGRESS плагина (NGINX)
+    - kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
     # Импорт общей конфигураций
     - kubectl apply -f config/stock-app-config.yaml
     # Деплой kafka + zookeeper
