@@ -30,7 +30,8 @@ create-kind-cluster:
     - get-variable message -valueOnly
     # ToDo: разобраться, почему не работает многострочный символ '>' (folded), может из-за powershell
     - if((get-variable message -valueOnly) -like 'No kind clusters found.' -Or (get-variable message -valueOnly) -like 'error*'){kind create cluster --config=kubernetes/kind-config.yaml --kubeconfig $env:KUBE_HOME/.kube/config}else{echo "Кластер готов."}
-
+  after_script:
+    - kind get clusters
 
 # ToDo: возможно тут нужна какая-то логика на проверку изменений в конфигах,
 # но для демонстрации пойдёт и такой вариант.
@@ -38,9 +39,10 @@ deploy-in-kubernetes:
   stage: deploy
   only:
     - master
-  script:
+  before_script:
     - cd kubernetes
     - $env:KUBECONFIG = "$env:KUBE_HOME/.kube/config"
+  script:
     # Импорт общей конфигураций
     - kubectl apply -f config/stock-app-config.yaml
     # Деплой kafka + zookeeper
@@ -60,3 +62,5 @@ deploy-in-kubernetes:
     - kubectl apply -f tinkoff-stock-app/service_tinkoff-stock-app.yaml
     - kubectl apply -f tinkoff-stock-app/ingress_tinkoff-stock-app.yaml
     - kubectl apply -f tinkoff-stock-app/deploy_tinkoff-stock-app.yaml
+  after_script:
+    - kubectl get po
