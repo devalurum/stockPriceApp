@@ -48,7 +48,7 @@ deploy-in-kubernetes:
   before_script:
     - cd kubernetes
     - $env:KUBECONFIG = "$env:KUBE_HOME/.kube/config"
-    script:
+  script:
     # Импорт общей конфигураций
     - kubectl apply -f config/stock-app-config.yaml
     # Деплой kafka + zookeeper
