@@ -15,7 +15,7 @@ build:
     - ./gradlew.bat --stop
 
 push-to-docker-hub:
-  stage: package
+  stage: release
   allow_failure: false
   script:
     - ./gradlew :stock-app-statistic:jib -x build -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
