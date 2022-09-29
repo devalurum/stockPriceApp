@@ -5,7 +5,7 @@ stages:
   - deploy
 # ToDo: Запустить gitlab-runner под текущим пользователем (не локальным). Ошибка: 1069
 
-build:
+.build:
   stage: build
   allow_failure: false
   script:
@@ -15,7 +15,7 @@ build:
     - ./gradlew :tinkoff-stock-app:build -x test -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
     - ./gradlew.bat --stop
 
-push-to-docker-hub:
+.push-to-docker-hub:
   stage: package
   allow_failure: false
   script:
@@ -48,9 +48,9 @@ deploy-in-kubernetes:
   before_script:
     - cd kubernetes
     - $env:KUBECONFIG = "$env:KUBE_HOME/.kube/config"
-  script:
     # Установка INGRESS плагина (NGINX)
     - kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+  script:
     # Импорт общей конфигураций
     - kubectl apply -f config/stock-app-config.yaml
     # Деплой kafka + zookeeper
