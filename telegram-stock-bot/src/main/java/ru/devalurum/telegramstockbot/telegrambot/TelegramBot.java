@@ -149,8 +149,6 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @PostConstruct
     private void initCommands() {
-        log.info("telegram-token: {}", getBotToken());
-
         List<BotCommand> botCommandList = Arrays.stream(TelegramCommand.values())
                 .filter(command -> command != TelegramCommand.NOT_FOUND)
                 .map(command -> new BotCommand(Constants.FORWARD_SLASH + command.getCommandAsString(),
