@@ -13,6 +13,7 @@ build:
     - ./gradlew :stock-app-statistic:build -x test -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
     - ./gradlew :telegram-stock-bot:build -x test -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
     - ./gradlew :tinkoff-stock-app:build -x test -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
+    - ./gradlew.bat --stop
 
 push-to-docker-hub:
   stage: package
@@ -21,8 +22,7 @@ push-to-docker-hub:
     - ./gradlew :stock-app-statistic:jib -x build -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
     - ./gradlew :telegram-stock-bot:jib -x build -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD" -PTELEGRAM_TOKEN="$env:TELEGRAM_TOKEN"
     - ./gradlew :tinkoff-stock-app:jib -x build -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD" -PTINKOFF_TOKEN="$env:TINKOFF_TOKEN"
-  after_script:
-    - ./gradlew clean
+    - ./gradlew.bat --stop
 
 create-kind-cluster:
   stage: kind-cluster
