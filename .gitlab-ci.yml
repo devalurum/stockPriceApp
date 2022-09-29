@@ -6,6 +6,8 @@ stages:
 
 build:
   stage: build
+  only:
+    - master
   allow_failure: false
   script:
     # ToDo: Как допишу тесты, добавить ещё одни стейдж 'test'
@@ -16,6 +18,8 @@ build:
 
 push-to-docker-hub:
   stage: release
+  only:
+    - master
   allow_failure: false
   script:
     - ./gradlew :stock-app-statistic:jib -x build -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
@@ -25,6 +29,8 @@ push-to-docker-hub:
 
 create-kind-cluster:
   stage: deploy
+  only:
+    - master
   allow_failure: false
   before_script:
     - set message (kind get clusters 2>&1)
@@ -45,8 +51,8 @@ deploy-in-kubernetes:
   only:
     - master
   before_script:
-    - cd kubernetes
     - $env:KUBECONFIG = "$env:KUBE_HOME/.kube/config"
+    - cd kubernetes
   script:
     # Импорт общей конфигураций
     - kubectl apply -f config/stock-app-config.yaml
