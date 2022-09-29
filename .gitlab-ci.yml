@@ -21,6 +21,8 @@ push-to-docker-hub:
     - ./gradlew :stock-app-statistic:jib -x build -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
     - ./gradlew :telegram-stock-bot:jib -x build -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD" -PTELEGRAM_TOKEN="$env:TELEGRAM_TOKEN"
     - ./gradlew :tinkoff-stock-app:jib -x build -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD" -PTINKOFF_TOKEN="$env:TINKOFF_TOKEN"
+  after_script:
+    - ./gradlew clean
 
 create-kind-cluster:
   stage: kind-cluster
@@ -63,4 +65,4 @@ deploy-in-kubernetes:
     - kubectl apply -f tinkoff-stock-app/ingress_tinkoff-stock-app.yaml
     - kubectl apply -f tinkoff-stock-app/deploy_tinkoff-stock-app.yaml
   after_script:
-    - kubectl get po
+    - kubectl get pods
