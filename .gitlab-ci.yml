@@ -7,7 +7,7 @@ stages:
 variables:
   GIT_SSL_NO_VERIFY: 1
 
-.build_job:
+build_job:
   stage: build
   only:
     - master
@@ -19,7 +19,7 @@ variables:
     - ./gradlew :tinkoff-stock-app:clean build -x test -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
     - ./gradlew.bat --stop
 
-.assemble_job:
+assemble_job:
   stage: build
   only:
     - master
@@ -32,7 +32,7 @@ variables:
     - ./gradlew.bat --stop
   # ToDo: разобраться с передачей *.jar-ников в push-to-docker-hub через artifacts/cache
 
-.push-to-docker-hub:
+push-to-docker-hub:
   stage: release
   only:
     - master
@@ -44,7 +44,7 @@ variables:
     - ./gradlew :tinkoff-stock-app:jib -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD" -PTINKOFF_TOKEN="$env:TINKOFF_TOKEN"
     - ./gradlew.bat --stop
 
-.create-kind-cluster:
+create-kind-cluster:
   stage: deploy
   only:
     - master
@@ -54,7 +54,12 @@ variables:
     - get-variable message -valueOnly
   script:
     # ToDo: Разобраться, почему не работает многострочный символ '>' (folded), может из-за powershell
-    - if((get-variable message -valueOnly) -like 'No kind clusters found.' -Or (get-variable message -valueOnly) -like 'error*'){kind create cluster --config=kubernetes/kind-config.yaml --kubeconfig $env:KUBE_HOME/.kube/config}else{echo "Кластер готов."}
+    >-
+    if((get-variable message -valueOnly) -like 'No kind clusters found.' -Or (get-variable message -valueOnly) -like 'error*'){
+      kind create cluster --config=kubernetes/kind-config.yaml --kubeconfig $env:KUBE_HOME/.kube/config
+    } else {
+      echo "Кластер готов."
+    }
   after_script:
     - kind get clusters
 
@@ -72,29 +77,46 @@ deploy-in-kubernetes:
   script:
     >-
     if ((get-variable check_deployment -valueOnly) -like 'No resources found in default namespace.'){
-        echo "apply"
+        # Импорт общей конфигураций
+        kubectl apply -f config/stock-app-config.yaml
+        # Деплой kafka + zookeeper
+        kubectl apply -f kafka/zookeeper.yaml
+        kubectl apply -f kafka/kafka.yaml
+        # Деплой PostgreSQL + PostGIS
+        kubectl apply -f db/postgres-config.yaml
+        kubectl apply -f db/storage_postgres.yaml
+        kubectl apply -f db/postgres.yaml
+        # Деплой микросервиса с подсчётом статистики
+        kubectl apply -f stock-app-statistic/service_stock-app-stat.yaml
+        kubectl apply -f stock-app-statistic/deploy_stock-app-stat.yaml
+        # Деплой микросервиса с телеграм-ботом
+        kubectl apply -f telegram-stock-bot/service_telegram-stock-bot.yaml
+        kubectl apply -f telegram-stock-bot/deploy_telegram-stock-bot.yaml
+        # Деплой микросервиса с tinkoff API
+        kubectl apply -f tinkoff-stock-app/service_tinkoff-stock-app.yaml
+        kubectl apply -f tinkoff-stock-app/ingress_tinkoff-stock-app.yaml
+        kubectl apply -f tinkoff-stock-app/deploy_tinkoff-stock-app.yaml
     } else {
-        echo "rollout"
+        # Импорт общей конфигураций
+        kubectl apply -f config/stock-app-config.yaml
+        # Деплой kafka + zookeeper
+        kubectl apply -f kafka/zookeeper.yaml
+        kubectl apply -f kafka/kafka.yaml
+        # Деплой PostgreSQL + PostGIS
+        kubectl apply -f db/postgres-config.yaml
+        kubectl apply -f db/storage_postgres.yaml
+        kubectl apply -f db/postgres.yaml
+        # Деплой микросервиса с подсчётом статистики
+        kubectl apply -f stock-app-statistic/service_stock-app-stat.yaml
+        kubectl rollout restart deployment stock-app-statistic
+        # Деплой микросервиса с телеграм-ботом
+        kubectl apply -f telegram-stock-bot/service_telegram-stock-bot.yaml
+        kubectl rollout restart deployment telegram-stock-bot
+        # Деплой микросервиса с tinkoff API
+        kubectl apply -f tinkoff-stock-app/service_tinkoff-stock-app.yaml
+        kubectl apply -f tinkoff-stock-app/ingress_tinkoff-stock-app.yaml
+        kubectl rollout restart deployment tinkoff-stock-app
     }
-#    # Импорт общей конфигураций
-#    - kubectl apply -f config/stock-app-config.yaml
-#    # Деплой kafka + zookeeper
-#    - kubectl apply -f kafka/zookeeper.yaml
-#    - kubectl apply -f kafka/kafka.yaml
-#    # Деплой PostgreSQL + PostGIS
-#    - kubectl apply -f db/postgres-config.yaml
-#    - kubectl apply -f db/storage_postgres.yaml
-#    - kubectl apply -f db/postgres.yaml
-#    # Деплой микросервиса с подсчётом статистики
-#    - kubectl apply -f stock-app-statistic/service_stock-app-stat.yaml
-#    - kubectl apply -f stock-app-statistic/deploy_stock-app-stat.yaml
-#    # Деплой микросервиса с телеграм-ботом
-#    - kubectl apply -f telegram-stock-bot/service_telegram-stock-bot.yaml
-#    - kubectl apply -f telegram-stock-bot/deploy_telegram-stock-bot.yaml
-#    # Деплой микросервиса с tinkoff API
-#    - kubectl apply -f tinkoff-stock-app/service_tinkoff-stock-app.yaml
-#    - kubectl apply -f tinkoff-stock-app/ingress_tinkoff-stock-app.yaml
-#    - kubectl apply -f tinkoff-stock-app/deploy_tinkoff-stock-app.yaml
   after_script:
     # Проверка и установка INGRESS плагина (NGINX)
     - set check_ing (kubectl get ing)
