@@ -20,6 +20,7 @@ spec:
       containers:
         - image: devalurum/telegram-stock-bot:latest
           name: telegram-stock-bot
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           envFrom:

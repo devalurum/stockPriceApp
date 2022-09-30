@@ -20,6 +20,7 @@ spec:
       containers:
         - image: devalurum/stock-app-stat:latest
           name: stock-app-stat
+          imagePullPolicy: Always
           ports:
             - containerPort: 8082
           envFrom:
