@@ -43,6 +43,9 @@ push-to-docker-hub:
   only:
     - master
   allow_failure: false
+  needs:
+    - job: assemble_job
+      artifacts: true
   script:
     - ./gradlew :stock-app-statistic:jib -x build -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
     - ./gradlew :telegram-stock-bot:jib -x build -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD" -PTELEGRAM_TOKEN="$env:TELEGRAM_TOKEN"
