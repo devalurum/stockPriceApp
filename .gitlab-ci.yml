@@ -4,9 +4,6 @@ stages:
   - deploy
 # ToDo: Запустить gitlab-runner под текущим пользователем (не локальным). Ошибка: 1069
 
-before_script:
-  - echo "Начало CI/CD."
-
 build_job:
   stage: build
   only:
@@ -24,12 +21,10 @@ assemble_job:
   only:
     - master
   allow_failure: false
-  artifacts:
-    paths:
-      - stock-app-statistic/build/libs/*.jar
-      - telegram-stock-bot/build/libs/*.jar
-      - tinkoff-stock-app/build/libs/*.jar
-    expire_in: 1 day
+  cache:
+    - key: build-cache
+      paths:
+        - .build/libs/*.jar
   script:
     # ToDo: Как допишу тесты, добавить ещё одни стейдж 'test'
     - ./gradlew :stock-app-statistic:assemble -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
@@ -41,8 +36,6 @@ push-to-docker-hub:
   stage: release
   only:
     - master
-  dependencies:
-    - assemble_job
   allow_failure: false
   script:
     - ./gradlew :stock-app-statistic:jib -x build -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
@@ -94,11 +87,8 @@ deploy-in-kubernetes:
     - kubectl apply -f tinkoff-stock-app/ingress_tinkoff-stock-app.yaml
     - kubectl apply -f tinkoff-stock-app/deploy_tinkoff-stock-app.yaml
   after_script:
-    # Установка INGRESS плагина (NGINX)
+    # Проверка и установка INGRESS плагина (NGINX)
     - set check_ing (kubectl get ing)
     - get-variable check_ing -valueOnly
     - if((get-variable check_ing -valueOnly) -like 'No resources found in default namespace.'){kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml}
     - kubectl get pods
-
-after_script:
-  - echo "CI/CD завершён."
