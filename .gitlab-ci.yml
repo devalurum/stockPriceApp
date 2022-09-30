@@ -35,17 +35,13 @@ create-kind-cluster:
   before_script:
     - set message (kind get clusters 2>&1)
     - get-variable message -valueOnly
-    - if((get-variable message -valueOnly) -like 'kind'){kind delete cluster}else{echo "Кластер удалён."}
   script:
-    - set message (kind get clusters 2>&1)
-    - get-variable message -valueOnly
     # ToDo: Разобраться, почему не работает многострочный символ '>' (folded), может из-за powershell
     - if((get-variable message -valueOnly) -like 'No kind clusters found.' -Or (get-variable message -valueOnly) -like 'error*'){kind create cluster --config=kubernetes/kind-config.yaml --kubeconfig $env:KUBE_HOME/.kube/config}else{echo "Кластер готов."}
   after_script:
     - kind get clusters
 
-# ToDo: возможно тут нужна какая-то логика на проверку изменений в конфигах,
-# но для демонстрации пойдёт и такой вариант.
+# ToDo: возможно тут нужна какая-то особенная логика на проверку изменений в конфигах.
 deploy-in-kubernetes:
   stage: deploy
   only:
@@ -75,5 +71,7 @@ deploy-in-kubernetes:
     - kubectl apply -f tinkoff-stock-app/deploy_tinkoff-stock-app.yaml
   after_script:
     # Установка INGRESS плагина (NGINX)
-    - kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+    - set check_ing (kubectl get ing)
+    - get-variable check_ing -valueOnly
+    - if((get-variable check_ing -valueOnly) -like 'No resources found in default namespace.'){kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml}
     - kubectl get pods

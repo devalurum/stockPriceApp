@@ -31,8 +31,8 @@ public class Constants {
 
     public static final String GOOGLE_MAPS_URL = "https://www.google.ru/maps/?q=%s,%s&z=18";
 
-    public static final String HELP_TEXT = "Этот бот создан для демонстрации микросервисной архитектуры." +
-            "*Местоположение используется только для демонстрации использования MapStruct.\n\n" +
+    public static final String HELP_TEXT = "Этот бот создан для демонстрации микросервисной архитектуры на актуальном" +
+            "стеке технологий: Java, Spring boot, Kafka, Kubernetes, GitLab CI/CD.\n\n" +
             "Введите ти́кер (краткое название) какой-либо акции, чтобы узнать её текующую цену.\n" +
             "Также, Вы можете запустить команды из меню или в выпадающем списке:\n\n" +
             "Введите /start, чтобы активировать бота.\n\n" +
