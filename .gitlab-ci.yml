@@ -7,7 +7,7 @@ stages:
 variables:
   GIT_SSL_NO_VERIFY: 1
 
-build_job:
+.build_job:
   stage: build
   only:
     - master
@@ -19,7 +19,7 @@ build_job:
     - ./gradlew :tinkoff-stock-app:clean build -x test -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
     - ./gradlew.bat --stop
 
-assemble_job:
+.assemble_job:
   stage: build
   only:
     - master
@@ -32,7 +32,7 @@ assemble_job:
     - ./gradlew.bat --stop
   # ToDo: разобраться с передачей *.jar-ников в push-to-docker-hub через artifacts/cache
 
-push-to-docker-hub:
+.push-to-docker-hub:
   stage: release
   only:
     - master
@@ -44,7 +44,7 @@ push-to-docker-hub:
     - ./gradlew :tinkoff-stock-app:jib -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD" -PTINKOFF_TOKEN="$env:TINKOFF_TOKEN"
     - ./gradlew.bat --stop
 
-create-kind-cluster:
+.create-kind-cluster:
   stage: deploy
   only:
     - master
@@ -72,11 +72,12 @@ deploy-in-kubernetes:
   before_script:
     - $env:KUBECONFIG = "$env:KUBE_HOME/.kube/config"
     - cd kubernetes
-    - set check_deployment (kubectl get deployments)
+    - set check_deployment (kubectl get deployment)
     - get-variable check_deployment -valueOnly
   script:
     >-
-    if ((get-variable check_deployment -valueOnly) -like 'No resources found in default namespace.'){
+    if ((get-variable check_deployment -valueOnly) -like 'No resources found*'){
+        echo "APPLY"
         # Импорт общей конфигураций
         kubectl apply -f config/stock-app-config.yaml
         # Деплой kafka + zookeeper
@@ -97,6 +98,7 @@ deploy-in-kubernetes:
         kubectl apply -f tinkoff-stock-app/ingress_tinkoff-stock-app.yaml
         kubectl apply -f tinkoff-stock-app/deploy_tinkoff-stock-app.yaml
     } else {
+        echo "ROLLOUT"
         # Импорт общей конфигураций
         kubectl apply -f config/stock-app-config.yaml
         # Деплой kafka + zookeeper
