@@ -24,7 +24,9 @@ assemble_job:
   cache:
     - key: build-cache
       paths:
-        - .build/libs/*.jar
+        - stock-app-statistic/build/libs/*.jar
+        - telegram-stock-bot/build/libs/*.jar
+        - tinkoff-stock-app/build/libs/*.jar
   script:
     # ToDo: Как допишу тесты, добавить ещё одни стейдж 'test'
     - ./gradlew :stock-app-statistic:assemble -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
