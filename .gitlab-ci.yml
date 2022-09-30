@@ -7,7 +7,7 @@ stages:
 variables:
   GIT_SSL_NO_VERIFY: 1
 
-.build_job:
+build_job:
   stage: build
   only:
     - master
@@ -19,7 +19,7 @@ variables:
     - ./gradlew :tinkoff-stock-app:clean build -x test -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
     - ./gradlew.bat --stop
 
-.assemble_job:
+assemble_job:
   stage: build
   only:
     - master
@@ -32,7 +32,7 @@ variables:
     - ./gradlew.bat --stop
   # ToDo: разобраться с передачей *.jar-ников в push-to-docker-hub через artifacts/cache
 
-.push-to-docker-hub:
+push-to-docker-hub:
   stage: release
   only:
     - master
@@ -44,7 +44,7 @@ variables:
     - ./gradlew :tinkoff-stock-app:jib -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD" -PTINKOFF_TOKEN="$env:TINKOFF_TOKEN"
     - ./gradlew.bat --stop
 
-.create-kind-cluster:
+create-kind-cluster:
   stage: deploy
   only:
     - master
@@ -72,7 +72,7 @@ deploy-in-kubernetes:
   before_script:
     - $env:KUBECONFIG = "$env:KUBE_HOME/.kube/config"
     - cd kubernetes
-    - set check_deployment (kubectl get deployment)
+    - set check_deployment (kubectl get deployment 2>&1)
     - get-variable check_deployment -valueOnly
   script:
     >-
