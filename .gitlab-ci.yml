@@ -4,11 +4,6 @@ stages:
   - deploy
 # ToDo: Запустить gitlab-runner под текущим пользователем (не локальным). Ошибка: 1069
 
-cache:
-  paths:
-    - .gradle/wrapper
-    - .gradle/caches
-
 before_script:
   - echo "Начало CI/CD."
 
@@ -31,8 +26,10 @@ assemble_job:
   allow_failure: false
   artifacts:
     paths:
-      - build/libs/*.jar
-    expire_in: 1 week
+      - stock-app-statistic/build/libs/*.jar
+      - telegram-stock-bot/build/libs/*.jar
+      - tinkoff-stock-app/build/libs/*.jar
+    expire_in: 1 day
   script:
     # ToDo: Как допишу тесты, добавить ещё одни стейдж 'test'
     - ./gradlew :stock-app-statistic:assemble -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
