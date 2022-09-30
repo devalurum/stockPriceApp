@@ -41,7 +41,8 @@ create-kind-cluster:
   after_script:
     - kind get clusters
 
-# ToDo: возможно тут нужна какая-то особенная логика на проверку изменений в конфигах.
+# ToDo: По хорошему нужно обновлять deployments через kubectl patch/set по id коммита,
+# чтобы у каждого тэга docker-контейнера была версия с id коммита, но для демонстрации хватит.
 deploy-in-kubernetes:
   stage: deploy
   only:
