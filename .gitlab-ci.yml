@@ -24,32 +24,24 @@ assemble_job:
   only:
     - master
   allow_failure: false
-  artifacts:
-    paths:
-      - stock-app-statistic/build/libs/*.jar
-      - telegram-stock-bot/build/libs/*.jar
-      - tinkoff-stock-app/build/libs/*.jar
-    expire_in: 1 day
-    untracked: true
   script:
     # ToDo: Как допишу тесты, добавить ещё одни стейдж 'test'
     - ./gradlew :stock-app-statistic:assemble -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
     - ./gradlew :telegram-stock-bot:assemble -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
     - ./gradlew :tinkoff-stock-app:assemble -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
     - ./gradlew.bat --stop
+  # ToDo: разобраться с передачей *.jar-ников в push-to-docker-hub через artifacts/cache
 
 push-to-docker-hub:
   stage: release
   only:
     - master
   allow_failure: false
-  needs:
-    - job: assemble_job
-      artifacts: true
   script:
-    - ./gradlew :stock-app-statistic:jib -x build -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
-    - ./gradlew :telegram-stock-bot:jib -x build -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD" -PTELEGRAM_TOKEN="$env:TELEGRAM_TOKEN"
-    - ./gradlew :tinkoff-stock-app:jib -x build -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD" -PTINKOFF_TOKEN="$env:TINKOFF_TOKEN"
+    # jib.dependsOn(bootJar) in build.gradle
+    - ./gradlew :stock-app-statistic:jib -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
+    - ./gradlew :telegram-stock-bot:jib -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD" -PTELEGRAM_TOKEN="$env:TELEGRAM_TOKEN"
+    - ./gradlew :tinkoff-stock-app:jib -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD" -PTINKOFF_TOKEN="$env:TINKOFF_TOKEN"
     - ./gradlew.bat --stop
 
 create-kind-cluster:
