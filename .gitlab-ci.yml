@@ -71,7 +71,7 @@ deploy-in-kubernetes:
     - get-variable check_deployment -valueOnly
   script:
     >-
-    if ((get-variable message -valueOnly) -like 'No resources found in default namespace.'){
+    if ((get-variable check_deployment -valueOnly) -like 'No resources found in default namespace.'){
         echo "apply"
     } else {
         echo "rollout"
