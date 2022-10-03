@@ -22,9 +22,9 @@
 - Postgresql (+PostGis)
 - Flyway
 - Gradle
-- Docker
+- Docker (+Gradle Jib)
 - Kubernetes (Kind)
-- GitLab CI (GitLab-Runner locality) + Github Actions 
+- GitLab CI (gitlab-runner locality with powershell) + Github Actions 
 
 ## Сборка приложения и деплой
 **Необходимо:**
@@ -110,6 +110,7 @@ kubectl apply -f tinkoff-stock-app/deploy_tinkoff-stock-app.yaml
 ```
 
 ## Todo:
+- Добавить поиск акции по названию (а не только по тикеру).
 - Написать тесты. Попробовать Testcontainers для тестирования kafka и 
 для репозиториев с помощью H2Gis или PostgreSQL с расширением PostGis.
 - Придумать единую точку сбора ошибок (на подобии @RestControllerAdvice) для kafka и отправке юзеру.
