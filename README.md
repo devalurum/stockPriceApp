@@ -2,7 +2,7 @@
 
 Приложение для получения информации и цены акции по ти́керу 
 (англ. ticker – краткое название актива на бирже) через [telegram-бота](https://telegram.me/StocksPricesBot),
-либо через API. Реализовано на основке SDK [Tinkoff Invest API](https://tinkoff.github.io/investAPI/). <br> 
+либо через API. Реализовано на основе SDK [Tinkoff Invest API](https://tinkoff.github.io/investAPI/). <br> 
 Этот pet-проект служит для демонстрации микросервисной архитектуры на актуальном стеке технологий.
 
 

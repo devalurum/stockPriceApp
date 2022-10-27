@@ -87,7 +87,7 @@ deploy-in-kubernetes:
   script:
     # ToDo: Упаковать все конфиги в Helm шаблоны
     >-
-    if ((get-variable check_deployment -valueOnly) -like 'No resources found*'){
+    if ((get-variable check_deployment -valueOnly) -like 'No resources found*' -OR (get-variable check_deployment -valueOnly) -like 'Error from server (NotFound):*'){
         # Импорт общей конфигураций
         kubectl apply -f config/stock-app-config.yaml
         # Деплой kafka + zookeeper
