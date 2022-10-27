@@ -50,13 +50,22 @@ create-kind-cluster:
     - master
   allow_failure: false
   before_script:
+    - $env:KUBECONFIG = "$env:KUBE_HOME/.kube/config"
     - set message (kind get clusters 2>&1)
-    - get-variable message -valueOnly
   script:
-    # ToDo: Разобраться, почему не работает многострочный символ '>' (folded), может из-за powershell
     >-
     if((get-variable message -valueOnly) -like 'No kind clusters found.' -Or (get-variable message -valueOnly) -like 'error*'){
-      kind create cluster --config=kubernetes/kind-config.yaml --kubeconfig $env:KUBE_HOME/.kube/config
+      kind create cluster --config=kubernetes/kind-config.yaml --kubeconfig $env:KUBECONFIG
+
+      # Установка Dashboard k8s UI
+      kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
+      kubectl create serviceaccount -n kubernetes-dashboard admin-user
+      kubectl create clusterrolebinding -n kubernetes-dashboard admin-user --clusterrole cluster-admin --serviceaccount=kubernetes-dashboard:admin-user
+      $token_kube = (kubectl -n kubernetes-dashboard create token admin-user 2>&1)
+
+      # Запуск Dashboard в background-режиме
+      kubectl proxy &
+      echo "Kubernetes UI доступен по ссылке: http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/"
     } else {
       echo "Кластер готов."
     }
@@ -72,12 +81,13 @@ deploy-in-kubernetes:
   before_script:
     - $env:KUBECONFIG = "$env:KUBE_HOME/.kube/config"
     - cd kubernetes
-    - set check_deployment (kubectl get deployment 2>&1)
+    # ToDo:создать отдельный namespace для проверки перед деплоем
+    - set check_deployment (kubectl get deployment telegram-stock-bot 2>&1)
     - get-variable check_deployment -valueOnly
   script:
+    # ToDo: Упаковать все конфиги в Helm шаблоны
     >-
     if ((get-variable check_deployment -valueOnly) -like 'No resources found*'){
-        echo "APPLY"
         # Импорт общей конфигураций
         kubectl apply -f config/stock-app-config.yaml
         # Деплой kafka + zookeeper
@@ -98,30 +108,26 @@ deploy-in-kubernetes:
         kubectl apply -f tinkoff-stock-app/ingress_tinkoff-stock-app.yaml
         kubectl apply -f tinkoff-stock-app/deploy_tinkoff-stock-app.yaml
     } else {
-        echo "ROLLOUT"
         # Импорт общей конфигураций
         kubectl apply -f config/stock-app-config.yaml
-        # Деплой kafka + zookeeper
-        kubectl apply -f kafka/zookeeper.yaml
-        kubectl apply -f kafka/kafka.yaml
-        # Деплой PostgreSQL + PostGIS
-        kubectl apply -f db/postgres-config.yaml
-        kubectl apply -f db/storage_postgres.yaml
-        kubectl apply -f db/postgres.yaml
+
         # Деплой микросервиса с подсчётом статистики
         kubectl apply -f stock-app-statistic/service_stock-app-stat.yaml
+        kubectl apply -f stock-app-statistic/deploy_stock-app-stat.yaml
         kubectl rollout restart deployment stock-app-statistic
         # Деплой микросервиса с телеграм-ботом
         kubectl apply -f telegram-stock-bot/service_telegram-stock-bot.yaml
+        kubectl apply -f telegram-stock-bot/deploy_telegram-stock-bot.yaml
         kubectl rollout restart deployment telegram-stock-bot
         # Деплой микросервиса с tinkoff API
         kubectl apply -f tinkoff-stock-app/service_tinkoff-stock-app.yaml
         kubectl apply -f tinkoff-stock-app/ingress_tinkoff-stock-app.yaml
+        kubectl apply -f tinkoff-stock-app/deploy_tinkoff-stock-app.yaml
         kubectl rollout restart deployment tinkoff-stock-app
     }
   after_script:
     # Проверка и установка INGRESS плагина (NGINX)
-    - set check_ing (kubectl get ing)
+    - set check_ing (kubectl get all -n ingress-nginx)
     - get-variable check_ing -valueOnly
-    - if((get-variable check_ing -valueOnly) -like 'No resources found in default namespace.'){kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml}
+    - if((get-variable check_ing -valueOnly) -like 'No resources found in ingress-nginx*'){kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml}
     - kubectl get pods
