@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.CacheManager;
 import org.springframework.kafka.KafkaException;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
@@ -13,9 +12,7 @@ import ru.devalurum.tinkoffstockapp.domain.dto.MessageShortDto;
 import ru.devalurum.tinkoffstockapp.domain.dto.StockDto;
 import ru.devalurum.tinkoffstockapp.domain.mapper.MessageShortMapper;
 import ru.devalurum.tinkoffstockapp.exception.StockNotFoundException;
-import ru.devalurum.tinkoffstockapp.service.StockService;
-import ru.tinkoff.piapi.contract.v1.Instrument;
-import ru.tinkoff.piapi.contract.v1.SecurityTradingStatus;
+import ru.tinkoff.piapi.core.exception.ApiRuntimeException;
 
 import javax.annotation.Nonnull;
 
@@ -44,7 +41,7 @@ public class KafkaConsumerService {
                     messageShortDto.getMessageId(), stockDto);
 
             kafkaProducerService.sendStock(messageToSendWithStock);
-        } catch (StockNotFoundException ex) {
+        } catch (StockNotFoundException | ApiRuntimeException ex) {
             sendErrorToKafkaWithNotFoundStock(messageShortDto);
         } catch (JsonProcessingException ex) {
             log.error("can't parse message:{}", message, ex);

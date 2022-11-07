@@ -22,6 +22,14 @@ kubeadmConfigPatches:
       nodefs.available: "0%"
       nodefs.inodesFree: "0%"
       imagefs.available: "70%"
+    systemReserved:
+      cpu: "500m"
+      memory: "1500Mi"
+      ephemeral-storage: "1Gi"
+    evictionMinimumReclaim:
+      memory.available: "0Mi"
+      nodefs.available: "2Gi"
+      imagefs.available: "8Gi"
 nodes:
   - role: control-plane
     extraPortMappings:
