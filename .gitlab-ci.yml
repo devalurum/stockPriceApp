@@ -13,7 +13,7 @@ build_job:
     - master
   allow_failure: false
   script:
-    # ToDo: Как допишу тесты, добавить ещё одни стейдж 'test'
+    # ToDo: Как допишу тесты, добавить ещё один стейдж 'test'
     - ./gradlew :stock-app-statistic:clean build -x test -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
     - ./gradlew :telegram-stock-bot:clean build -x test -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
     - ./gradlew :tinkoff-stock-app:clean build -x test -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
@@ -25,7 +25,6 @@ assemble_job:
     - master
   allow_failure: false
   script:
-    # ToDo: Как допишу тесты, добавить ещё одни стейдж 'test'
     - ./gradlew :stock-app-statistic:assemble -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
     - ./gradlew :telegram-stock-bot:assemble -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
     - ./gradlew :tinkoff-stock-app:assemble -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
