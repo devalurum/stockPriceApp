@@ -2,7 +2,6 @@ stages:
   - build
   - release
   - deploy
-# ToDo: Запустить gitlab-runner под текущим пользователем (не локальным). Ошибка: 1069
 
 variables:
   GIT_SSL_NO_VERIFY: 1
