@@ -2,7 +2,7 @@ kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 networking:
   ipFamily: ipv4
-  apiServerAddress: 127.0.0.1
+  #apiServerAddress: 127.0.0.1
   apiServerPort: 6444
   disableDefaultCNI: false
 kubeadmConfigPatches:
@@ -24,17 +24,17 @@ kubeadmConfigPatches:
       imagefs.available: "70%"
     systemReserved:
       cpu: "500m"
-      memory: "1500Mi"
+      memory: "1000Mi"
       ephemeral-storage: "1Gi"
     evictionMinimumReclaim:
       memory.available: "0Mi"
-      nodefs.available: "2Gi"
-      imagefs.available: "8Gi"
+      nodefs.available: "1Gi"
+      imagefs.available: "2Gi"
 nodes:
   - role: control-plane
     extraPortMappings:
       - containerPort: 80
-        hostPort: 8880
+        hostPort: 80
         protocol: TCP
-        listenAddress: 10.10.0.220
+        listenAddress: 51.250.111.169
   - role: worker
