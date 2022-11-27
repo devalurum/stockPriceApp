@@ -1,0 +1,132 @@
+stages:
+  - build
+  - release
+  - deploy
+# ToDo: Запустить gitlab-runner под текущим пользователем (не локальным). Ошибка: 1069
+
+variables:
+  GIT_SSL_NO_VERIFY: 1
+
+build_job:
+  stage: build
+  only:
+    - master
+  allow_failure: false
+  script:
+    # ToDo: Как допишу тесты, добавить ещё один стейдж 'test'
+    - ./gradlew :stock-app-statistic:clean build -x test -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
+    - ./gradlew :telegram-stock-bot:clean build -x test -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
+    - ./gradlew :tinkoff-stock-app:clean build -x test -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
+    - ./gradlew.bat --stop
+
+assemble_job:
+  stage: build
+  only:
+    - master
+  allow_failure: false
+  script:
+    - ./gradlew :stock-app-statistic:assemble -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
+    - ./gradlew :telegram-stock-bot:assemble -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
+    - ./gradlew :tinkoff-stock-app:assemble -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
+    - ./gradlew.bat --stop
+  # ToDo: разобраться с передачей *.jar-ников в push-to-docker-hub через artifacts/cache
+
+push-to-docker-hub:
+  stage: release
+  only:
+    - master
+  allow_failure: false
+  script:
+    # jib.dependsOn(bootJar) in build.gradle
+    - ./gradlew :stock-app-statistic:jib -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD"
+    - ./gradlew :telegram-stock-bot:jib -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD" -PTELEGRAM_TOKEN="$env:TELEGRAM_TOKEN"
+    - ./gradlew :tinkoff-stock-app:jib -PDOCKERHUB_USERNAME="$env:DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$env:DOCKERHUB_PASSWORD" -PTINKOFF_TOKEN="$env:TINKOFF_TOKEN"
+    - ./gradlew.bat --stop
+
+create-kind-cluster:
+  stage: deploy
+  only:
+    - master
+  allow_failure: false
+  before_script:
+    - $env:KUBECONFIG = "$env:KUBE_HOME/.kube/config"
+    - set message (kind get clusters 2>&1)
+  script:
+    >-
+    if((get-variable message -valueOnly) -like 'No kind clusters found.' -Or (get-variable message -valueOnly) -like 'error*'){
+      kind create cluster --config=kubernetes/kind-config.yaml --kubeconfig $env:KUBECONFIG
+
+      # Установка Dashboard k8s UI
+      kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
+      kubectl create serviceaccount -n kubernetes-dashboard admin-user
+      kubectl create clusterrolebinding -n kubernetes-dashboard admin-user --clusterrole cluster-admin --serviceaccount=kubernetes-dashboard:admin-user
+      $token_kube = (kubectl -n kubernetes-dashboard create token admin-user 2>&1)
+
+      # Запуск Dashboard в background-режиме
+      kubectl proxy &
+      echo "Kubernetes UI доступен по ссылке: http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/"
+    } else {
+      echo "Кластер готов."
+    }
+  after_script:
+    - kind get clusters
+
+# ToDo: По хорошему нужно обновлять deployments через kubectl patch/set по id коммита,
+# чтобы у каждого тэга docker-контейнера была версия с id коммита, но для демонстрации хватит.
+deploy-in-kubernetes:
+  stage: deploy
+  only:
+    - master
+  before_script:
+    - $env:KUBECONFIG = "$env:KUBE_HOME/.kube/config"
+    - cd kubernetes
+    # ToDo:создать отдельный namespace для проверки перед деплоем
+    - set check_deployment (kubectl get deployment telegram-stock-bot 2>&1)
+    - get-variable check_deployment -valueOnly
+  script:
+    # ToDo: Упаковать все конфиги в Helm шаблоны
+    >-
+    if ((get-variable check_deployment -valueOnly) -like 'No resources found*' -OR (get-variable check_deployment -valueOnly) -like 'Error from server (NotFound):*'){
+        # Импорт общей конфигураций
+        kubectl apply -f config/stock-app-config.yaml
+        # Деплой kafka + zookeeper
+        kubectl apply -f kafka/zookeeper.yaml
+        kubectl apply -f kafka/kafka.yaml
+        # Деплой PostgreSQL + PostGIS
+        kubectl apply -f db/postgres-config.yaml
+        kubectl apply -f db/storage_postgres.yaml
+        kubectl apply -f db/postgres.yaml
+        # Деплой микросервиса с подсчётом статистики
+        kubectl apply -f stock-app-statistic/service_stock-app-stat.yaml
+        kubectl apply -f stock-app-statistic/deploy_stock-app-stat.yaml
+        # Деплой микросервиса с телеграм-ботом
+        kubectl apply -f telegram-stock-bot/service_telegram-stock-bot.yaml
+        kubectl apply -f telegram-stock-bot/deploy_telegram-stock-bot.yaml
+        # Деплой микросервиса с tinkoff API
+        kubectl apply -f tinkoff-stock-app/service_tinkoff-stock-app.yaml
+        kubectl apply -f tinkoff-stock-app/ingress_tinkoff-stock-app.yaml
+        kubectl apply -f tinkoff-stock-app/deploy_tinkoff-stock-app.yaml
+    } else {
+        # Импорт общей конфигураций
+        kubectl apply -f config/stock-app-config.yaml
+
+        # Деплой микросервиса с подсчётом статистики
+        kubectl apply -f stock-app-statistic/service_stock-app-stat.yaml
+        kubectl apply -f stock-app-statistic/deploy_stock-app-stat.yaml
+        kubectl rollout restart deployment stock-app-statistic
+        # Деплой микросервиса с телеграм-ботом
+        kubectl apply -f telegram-stock-bot/service_telegram-stock-bot.yaml
+        kubectl apply -f telegram-stock-bot/deploy_telegram-stock-bot.yaml
+        kubectl rollout restart deployment telegram-stock-bot
+        # Деплой микросервиса с tinkoff API
+        kubectl apply -f tinkoff-stock-app/service_tinkoff-stock-app.yaml
+        kubectl apply -f tinkoff-stock-app/ingress_tinkoff-stock-app.yaml
+        kubectl apply -f tinkoff-stock-app/deploy_tinkoff-stock-app.yaml
+        kubectl rollout restart deployment tinkoff-stock-app
+    }
+  after_script:
+    # Проверка и установка INGRESS плагина (NGINX)
+    - set check_ing (kubectl get all -n ingress-nginx)
+    - get-variable check_ing -valueOnly
+    - if((get-variable check_ing -valueOnly) -like 'No resources found in ingress-nginx*'){kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml}
+    - kubectl get pods
