@@ -6,7 +6,7 @@ stages:
 variables:
   GIT_SSL_NO_VERIFY: 1
 
-build_job:
+.build_job:
   stage: build
   only:
     - master
@@ -17,7 +17,7 @@ build_job:
     - ./gradlew :telegram-stock-bot:clean build -x test -PDOCKERHUB_USERNAME="$DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$DOCKERHUB_PASSWORD"
     - ./gradlew :tinkoff-stock-app:clean build -x test -PDOCKERHUB_USERNAME="$DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$DOCKERHUB_PASSWORD"
 
-assemble_job:
+.assemble_job:
   stage: build
   only:
     - master
@@ -28,7 +28,7 @@ assemble_job:
     - ./gradlew :tinkoff-stock-app:assemble -PDOCKERHUB_USERNAME="$DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$DOCKERHUB_PASSWORD"
   # ToDo: разобраться с передачей *.jar-ников в push-to-docker-hub через artifacts/cache
 
-push-to-docker-hub:
+.push-to-docker-hub:
   stage: release
   only:
     - master
@@ -51,7 +51,7 @@ create-kind-cluster:
       if [[ $message == "kind" ]]; then
           echo "Кластер готов."
       else 
-          kind create cluster --config=kubernetes/kind-config.yaml 
+          kind create cluster --config=kubernetes/kind-config.yaml --kubeconfig $KUBECONFIG
       fi
   after_script:
     - kind get clusters
