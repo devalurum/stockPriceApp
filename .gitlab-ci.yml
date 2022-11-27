@@ -13,9 +13,9 @@ build_job:
   allow_failure: false
   script:
     # ToDo: Как допишу тесты, добавить ещё один стейдж 'test'
-    - ./gradlew :stock-app-statistic:clean build -x test -PDOCKERHUB_USERNAME="$DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$DOCKERHUB_PASSWORD"
-    - ./gradlew :telegram-stock-bot:clean build -x test -PDOCKERHUB_USERNAME="$DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$DOCKERHUB_PASSWORD"
-    - ./gradlew :tinkoff-stock-app:clean build -x test -PDOCKERHUB_USERNAME="$DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$DOCKERHUB_PASSWORD"
+    - gradlew :stock-app-statistic:clean build -x test -PDOCKERHUB_USERNAME="$DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$DOCKERHUB_PASSWORD"
+    - gradlew :telegram-stock-bot:clean build -x test -PDOCKERHUB_USERNAME="$DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$DOCKERHUB_PASSWORD"
+    - gradlew :tinkoff-stock-app:clean build -x test -PDOCKERHUB_USERNAME="$DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$DOCKERHUB_PASSWORD"
 
 assemble_job:
   stage: build
@@ -23,9 +23,9 @@ assemble_job:
     - master
   allow_failure: false
   script:
-    - ./gradlew :stock-app-statistic:assemble -PDOCKERHUB_USERNAME="$DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$DOCKERHUB_PASSWORD"
-    - ./gradlew :telegram-stock-bot:assemble -PDOCKERHUB_USERNAME="$DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$DOCKERHUB_PASSWORD"
-    - ./gradlew :tinkoff-stock-app:assemble -PDOCKERHUB_USERNAME="$DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$DOCKERHUB_PASSWORD"
+    - gradlew :stock-app-statistic:assemble -PDOCKERHUB_USERNAME="$DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$DOCKERHUB_PASSWORD"
+    - gradlew :telegram-stock-bot:assemble -PDOCKERHUB_USERNAME="$DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$DOCKERHUB_PASSWORD"
+    - gradlew :tinkoff-stock-app:assemble -PDOCKERHUB_USERNAME="$DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$DOCKERHUB_PASSWORD"
   # ToDo: разобраться с передачей *.jar-ников в push-to-docker-hub через artifacts/cache
 
 push-to-docker-hub:
@@ -35,9 +35,9 @@ push-to-docker-hub:
   allow_failure: false
   script:
     # jib.dependsOn(bootJar) in build.gradle
-    - ./gradlew :stock-app-statistic:jib -PDOCKERHUB_USERNAME="$DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$DOCKERHUB_PASSWORD"
-    - ./gradlew :telegram-stock-bot:jib -PDOCKERHUB_USERNAME="$DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$DOCKERHUB_PASSWORD" -PTELEGRAM_TOKEN="$TELEGRAM_TOKEN"
-    - ./gradlew :tinkoff-stock-app:jib -PDOCKERHUB_USERNAME="$DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$DOCKERHUB_PASSWORD" -PTINKOFF_TOKEN="$TINKOFF_TOKEN"
+    - gradlew :stock-app-statistic:jib -PDOCKERHUB_USERNAME="$DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$DOCKERHUB_PASSWORD"
+    - gradlew :telegram-stock-bot:jib -PDOCKERHUB_USERNAME="$DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$DOCKERHUB_PASSWORD" -PTELEGRAM_TOKEN="$TELEGRAM_TOKEN"
+    - gradlew :tinkoff-stock-app:jib -PDOCKERHUB_USERNAME="$DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$DOCKERHUB_PASSWORD" -PTINKOFF_TOKEN="$TINKOFF_TOKEN"
 
 create-kind-cluster:
   stage: deploy
