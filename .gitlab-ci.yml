@@ -45,10 +45,10 @@ create-kind-cluster:
     - master
   allow_failure: false
   before_script:
-    - message=$(kind get clusters)
+    - check_kind_cluster=$(kind get clusters)
   script:
     - |-
-      if [[ $message == "kind" ]]; then
+      if [[ $check_kind_cluster == "kind" ]]; then
           echo "Кластер готов."
       else 
           kind create cluster --config=kubernetes/kind-config.yaml --kubeconfig $KUBECONFIG
@@ -68,6 +68,11 @@ deploy-in-kubernetes:
     # ToDo:создать отдельный namespace для проверки перед деплоем
     - check_deployment=$(kubectl get deployment telegram-stock-bot --ignore-not-found=true)
     - echo $check_deployment
+    - |-
+      check_flannel=$(kubectl get all -n kube_flannel --ignore-not-found=true)
+      if [ -z "${check_flannel}" ] ; then
+          kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml      else 
+      fi
   script:
     # ToDo: Упаковать все конфиги в Helm шаблоны
     - |-
