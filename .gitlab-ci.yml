@@ -68,9 +68,8 @@ deploy-in-kubernetes:
     - check_deployment=$(kubectl get deployment telegram-stock-bot)
     - echo $check_deployment
   script:
-    # ToDo: Упаковать все конфиги в Helm шаблоны
     - |-
-      if [[ $check_deployment =~ "No resources found" ]] || [[ $check_deployment =~ "Error from server (NotFound)" ]]; then
+      if [[ $check_deployment =~ "Error from server (NotFound)" ]]; then
           echo "INIT"
           # Импорт общей конфигураций
           kubectl apply -f config/stock-app-config.yaml
