@@ -71,7 +71,7 @@ deploy-in-kubernetes:
     - |-
       check_flannel=$(kubectl get all -n kube_flannel --ignore-not-found=true)
       if [ -z "${check_flannel}" ] ; then
-          kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml      else 
+          kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml 
       fi
   script:
     # ToDo: Упаковать все конфиги в Helm шаблоны
