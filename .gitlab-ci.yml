@@ -71,7 +71,7 @@ deploy-in-kubernetes:
   script:
     # ToDo: Упаковать все конфиги в Helm шаблоны
     - |-
-      if [[ $check_deployment =~ "No resources found" ]] || [[ $check_deployment =~ "Error from server (NotFound)" ]]; then
+      if [[ -z "${check_deployment}" ]] ; then
           echo "INIT"
           # Импорт общей конфигураций
           kubectl apply -f config/stock-app-config.yaml
@@ -114,8 +114,8 @@ deploy-in-kubernetes:
   after_script:
     # Проверка и установка INGRESS плагина (NGINX)
     - |-
-      check_ing=$(kubectl get all -n ingress-nginx)
-      if [[ $check_ing =~ "No resources found in ingress-nginx" ]]; then
+      check_ing=$(kubectl get all -n ingress-nginx --ignore-not-found=true)
+      if [[ -z "${check_ing}" ]] ; then
           kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
       else 
           kubectl get pods 
