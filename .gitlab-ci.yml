@@ -70,8 +70,7 @@ deploy-in-kubernetes:
   script:
     # ToDo: Упаковать все конфиги в Helm шаблоны
     - |-
-      echo $check_deployment
-      if [[ $check_deployment =~ "No resources found" ]] || [ $check_deployment =~ "Error from server (NotFound)" ]; then
+      if [[ $check_deployment =~ "No resources found" ]] || [[ $check_deployment =~ "Error from server (NotFound)" ]]; then
           echo "INIT"
           # Импорт общей конфигураций
           kubectl apply -f config/stock-app-config.yaml
