@@ -105,7 +105,7 @@ deploy-in-kubernetes:
           # Деплой микросервиса с подсчётом статистики
           kubectl apply -f stock-app-statistic/service_stock-app-stat.yaml
           kubectl apply -f stock-app-statistic/deploy_stock-app-stat.yaml
-          kubectl rollout restart deployment stock-app-statistic
+          kubectl rollout restart deployment stock-app-stat
           # Деплой микросервиса с телеграм-ботом
           kubectl apply -f telegram-stock-bot/service_telegram-stock-bot.yaml
           kubectl apply -f telegram-stock-bot/deploy_telegram-stock-bot.yaml
