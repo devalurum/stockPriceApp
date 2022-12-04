@@ -64,10 +64,10 @@ deploy-in-kubernetes:
     - master
   before_script:
     - cd kubernetes
+    - echo $HOME
     # ToDo:создать отдельный namespace для проверки перед деплоем
     - check_deployment=$(kubectl get deployment telegram-stock-bot)
     - echo $check_deployment
-    - echo $HOME
   script:
     # ToDo: Упаковать все конфиги в Helm шаблоны
     - |-
