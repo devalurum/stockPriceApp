@@ -12,24 +12,24 @@ kubeadmConfigPatches:
       kubeletExtraArgs:
         node-labels: "ingress-ready=true"
         authorization-mode: "AlwaysAllow"
-    ---
-    apiVersion: kubelet.config.k8s.io/v1beta1
-    kind: KubeletConfiguration
-    metadata:
-      name: config
-    imageGCHighThresholdPercent: 90
-    evictionHard:
-      nodefs.available: "0%"
-      nodefs.inodesFree: "0%"
-      imagefs.available: "70%"
-    systemReserved:
-      cpu: "500m"
-      memory: "1000Mi"
-      ephemeral-storage: "1Gi"
-    evictionMinimumReclaim:
-      memory.available: "0Mi"
-      nodefs.available: "1000mi"
-      imagefs.available: "2Gi"
+#    ---
+#    apiVersion: kubelet.config.k8s.io/v1beta1
+#    kind: KubeletConfiguration
+#    metadata:
+#      name: config
+#    imageGCHighThresholdPercent: 90
+#    evictionHard:
+#      nodefs.available: "0%"
+#      nodefs.inodesFree: "0%"
+#      imagefs.available: "70%"
+#    systemReserved:
+#      cpu: "500m"
+#      memory: "1000Mi"
+#      ephemeral-storage: "1Gi"
+#    evictionMinimumReclaim:
+#      memory.available: "0Mi"
+#      nodefs.available: "1000mi"
+#      imagefs.available: "2Gi"
 nodes:
   - role: control-plane
     extraPortMappings:
