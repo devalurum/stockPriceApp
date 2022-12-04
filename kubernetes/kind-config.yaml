@@ -21,15 +21,15 @@ kubeadmConfigPatches:
     evictionHard:
       nodefs.available: "0%"
       nodefs.inodesFree: "0%"
-      imagefs.available: "50%"
+      imagefs.available: "70%"
     systemReserved:
-      cpu: "200m"
+      cpu: "500m"
       memory: "1000Mi"
       ephemeral-storage: "1Gi"
     evictionMinimumReclaim:
       memory.available: "0Mi"
-      nodefs.available: "500mi"
-      imagefs.available: "1Gi"
+      nodefs.available: "1000mi"
+      imagefs.available: "2Gi"
 nodes:
   - role: control-plane
     extraPortMappings:
