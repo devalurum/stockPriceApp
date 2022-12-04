@@ -37,4 +37,5 @@ nodes:
         hostPort: 80
         protocol: TCP
         #listenAddress: 51.250.111.169
+        listenAddress: 127.0.0.1
   - role: worker
