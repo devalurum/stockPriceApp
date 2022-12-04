@@ -70,7 +70,9 @@ deploy-in-kubernetes:
   script:
     # ToDo: Упаковать все конфиги в Helm шаблоны
     - |-
+      echo $check_deployment
       if [[ $check_deployment =~ "No resources found" ]] || [ $check_deployment =~ "Error from server (NotFound)" ]; then
+          echo "INIT"
           # Импорт общей конфигураций
           kubectl apply -f config/stock-app-config.yaml
           # Деплой kafka + zookeeper
@@ -91,6 +93,7 @@ deploy-in-kubernetes:
           kubectl apply -f tinkoff-stock-app/ingress_tinkoff-stock-app.yaml
           kubectl apply -f tinkoff-stock-app/deploy_tinkoff-stock-app.yaml
       else 
+          echo "UPDATE"
           # Импорт общей конфигураций
           kubectl apply -f config/stock-app-config.yaml
   
