@@ -68,12 +68,7 @@ deploy-in-kubernetes:
     - check_deployment=$(kubectl get deployment telegram-stock-bot)
     - echo $check_deployment
   script:
-    - |-
-      if [[ $check_deployment =~ "Error from server (NotFound)" ]]; then
-          echo "INIT"
-      else 
-          echo "UPDATE"
-      fi
+    - echo "ALLO"
   after_script:
     # Проверка и установка INGRESS плагина (NGINX)
     - |-
