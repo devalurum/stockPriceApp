@@ -64,18 +64,13 @@ deploy-in-kubernetes:
     - master
   before_script:
     - cd kubernetes
-    - echo $HOME
-    - echo $KUBECONFIG
-    - whoami
-    - sudo -i
-    - whoami
     # ToDo:создать отдельный namespace для проверки перед деплоем
     - check_deployment=$(kubectl get deployment telegram-stock-bot)
     - echo $check_deployment
   script:
     # ToDo: Упаковать все конфиги в Helm шаблоны
     - |-
-      if [[ $check_deployment == "No resources found*" ]] || [ $check_deployment == "Error from server (NotFound):*" ]; then
+      if [[ $check_deployment =~ "No resources found" ]] || [ $check_deployment =~ "Error from server (NotFound)" ]; then
           # Импорт общей конфигураций
           kubectl apply -f config/stock-app-config.yaml
           # Деплой kafka + zookeeper
@@ -117,7 +112,7 @@ deploy-in-kubernetes:
     # Проверка и установка INGRESS плагина (NGINX)
     - |-
       check_ing=$(kubectl get all -n ingress-nginx)
-      if [[ $check_ing == "No resources found in ingress-nginx*" ]]; then
+      if [[ $check_ing =~ "No resources found in ingress-nginx" ]]; then
           kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
       else 
           kubectl get pods 
