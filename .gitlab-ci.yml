@@ -65,6 +65,7 @@ deploy-in-kubernetes:
   before_script:
     - cd kubernetes
     - echo $HOME
+    - echo $KUBECONFIG
     # ToDo:создать отдельный namespace для проверки перед деплоем
     - check_deployment=$(kubectl get deployment telegram-stock-bot)
     - echo $check_deployment
