@@ -13,6 +13,7 @@ public class TinkoffApiConfig {
 
     @Bean
     public InvestApi tinkoffConfigApi() {
+        System.out.println(tinkoffToken);
         return InvestApi.createReadonly(tinkoffToken);
     }
 }
