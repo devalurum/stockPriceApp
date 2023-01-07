@@ -2,7 +2,8 @@ kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 networking:
   ipFamily: ipv4
-  apiServerAddress: 127.0.0.1
+  #apiServerAddress: 127.0.0.1
+  apiServerAddress: 0.0.0.0
   apiServerPort: 6444
   disableDefaultCNI: false
 kubeadmConfigPatches:
@@ -13,24 +14,24 @@ kubeadmConfigPatches:
         node-labels: "ingress-ready=true"
         authorization-mode: "AlwaysAllow"
 # ToDo: подобрать лучшие параметры для yandex.cloud
-#    ---
-#    apiVersion: kubelet.config.k8s.io/v1beta1
-#    kind: KubeletConfiguration
-#    metadata:
-#      name: config
-#    imageGCHighThresholdPercent: 90
-#    evictionHard:
-#      nodefs.available: "0%"
-#      nodefs.inodesFree: "0%"
-#      imagefs.available: "70%"
-#    systemReserved:
-#      cpu: "500m"
-#      memory: "1500Mi"
-#      ephemeral-storage: "1Gi"
-#    evictionMinimumReclaim:
-#      memory.available: "0Mi"
-#      nodefs.available: "2Gi"
-#      imagefs.available: "8Gi"
+    ---
+    apiVersion: kubelet.config.k8s.io/v1beta1
+    kind: KubeletConfiguration
+    metadata:
+      name: config
+    imageGCHighThresholdPercent: 90
+    evictionHard:
+      nodefs.available: "0%"
+      nodefs.inodesFree: "0%"
+      imagefs.available: "70%"
+    systemReserved:
+      cpu: "500m"
+      memory: "1500Mi"
+      ephemeral-storage: "1Gi"
+    evictionMinimumReclaim:
+      memory.available: "0Mi"
+      nodefs.available: "2Gi"
+      imagefs.available: "8Gi"
 nodes:
   - role: control-plane
     extraPortMappings:
