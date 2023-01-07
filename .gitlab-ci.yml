@@ -6,7 +6,7 @@ stages:
 variables:
   GIT_SSL_NO_VERIFY: 1
 
-build_job:
+.build_job:
   stage: build
   only:
     - master
@@ -17,7 +17,7 @@ build_job:
     - ./gradlew :telegram-stock-bot:clean build -x test -PDOCKERHUB_USERNAME="$DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$DOCKERHUB_PASSWORD" -PTELEGRAM_TOKEN="$TELEGRAM_TOKEN"
     - ./gradlew :tinkoff-stock-app:clean build -x test -PDOCKERHUB_USERNAME="$DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$DOCKERHUB_PASSWORD" -PTINKOFF_TOKEN="$TINKOFF_TOKEN"
 
-assemble_job:
+.assemble_job:
   stage: build
   only:
     - master
@@ -28,7 +28,7 @@ assemble_job:
     - ./gradlew :tinkoff-stock-app:assemble -PDOCKERHUB_USERNAME="$DOCKERHUB_USERNAME" -PDOCKERHUB_PASSWORD="$DOCKERHUB_PASSWORD" -PTINKOFF_TOKEN="$TINKOFF_TOKEN"
   # ToDo: разобраться с передачей *.jar-ников в push-to-docker-hub через artifacts/cache
 
-push-to-docker-hub:
+.push-to-docker-hub:
   stage: release
   only:
     - master

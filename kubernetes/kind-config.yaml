@@ -13,7 +13,6 @@ kubeadmConfigPatches:
       kubeletExtraArgs:
         node-labels: "ingress-ready=true"
         authorization-mode: "AlwaysAllow"
-# ToDo: подобрать лучшие параметры для yandex.cloud
     ---
     apiVersion: kubelet.config.k8s.io/v1beta1
     kind: KubeletConfiguration
