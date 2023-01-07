@@ -2,9 +2,12 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: tinkoff-stock-app
+  annotations:
+    kubernetes.io/ingress.class: tinkoff-stock-app
 spec:
   rules:
-    - http:
+    - host: 0.0.0.0
+      http:
         paths:
           - path: /tinkoff-stock-app
             pathType: Prefix
