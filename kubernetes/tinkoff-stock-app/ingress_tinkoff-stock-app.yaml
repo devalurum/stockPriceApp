@@ -6,7 +6,6 @@ metadata:
     kubernetes.io/ingress.class: tinkoff-stock-app
 spec:
   rules:
-    - host: 0.0.0.0
       http:
         paths:
           - path: /tinkoff-stock-app
