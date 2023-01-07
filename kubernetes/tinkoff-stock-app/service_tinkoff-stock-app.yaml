@@ -7,7 +7,9 @@ spec:
     app: tinkoff-stock-app
   type: ClusterIP
   ports:
-    - port: 80
+    - name: http
+      protocol: TCP
+      port: 80
       targetPort: 8081
-  externalIPs:
-    - 158.160.5.6
+  #externalIPs:
+  #  - 158.160.5.6

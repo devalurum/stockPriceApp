@@ -4,6 +4,7 @@ metadata:
   name: tinkoff-stock-app
 spec:
   rules:
+    - host: yandex.cloud.kubernetes
       http:
         paths:
           - path: /tinkoff-stock-app
@@ -13,3 +14,4 @@ spec:
                 name: tinkoff-stock-app
                 port:
                   number: 80
+  ingressClassName: nginx
