@@ -8,8 +8,8 @@ spec:
       protocol: TCP
       port: 80
       targetPort: 8081
-      externalIPs:
-        - 158.160.5.6
+  externalIPs:
+    - 158.160.5.6
   selector:
     app: tinkoff-stock-app
   type: LoadBalancer
