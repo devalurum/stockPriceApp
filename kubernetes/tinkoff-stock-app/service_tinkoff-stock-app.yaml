@@ -3,6 +3,9 @@ kind: Service
 metadata:
   name: tinkoff-stock-app
 spec:
+  selector:
+    app: tinkoff-stock-app
+  type: LoadBalancer
   ports:
     - name: http
       protocol: TCP
@@ -10,6 +13,3 @@ spec:
       targetPort: 8081
   externalIPs:
     - 158.160.5.6
-  selector:
-    app: tinkoff-stock-app
-  type: LoadBalancer
