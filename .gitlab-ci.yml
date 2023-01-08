@@ -95,7 +95,7 @@ deploy-in-kubernetes:
           kubectl apply -f telegram-stock-bot/deploy_telegram-stock-bot.yaml
           # Деплой микросервиса с tinkoff API
           kubectl apply -f tinkoff-stock-app/service_tinkoff-stock-app.yaml
-          kubectl apply -f tinkoff-stock-app/ingress_tinkoff-stock-app.yaml
+          # kubectl apply -f tinkoff-stock-app/ingress_tinkoff-stock-app.yaml
           kubectl apply -f tinkoff-stock-app/deploy_tinkoff-stock-app.yaml
       else 
           echo "UPDATE"
@@ -112,7 +112,7 @@ deploy-in-kubernetes:
           kubectl rollout restart deployment telegram-stock-bot
           # Деплой микросервиса с tinkoff API
           kubectl apply -f tinkoff-stock-app/service_tinkoff-stock-app.yaml
-          kubectl apply -f tinkoff-stock-app/ingress_tinkoff-stock-app.yaml
+          # kubectl apply -f tinkoff-stock-app/ingress_tinkoff-stock-app.yaml
           kubectl apply -f tinkoff-stock-app/deploy_tinkoff-stock-app.yaml
           kubectl rollout restart deployment tinkoff-stock-app
       fi
