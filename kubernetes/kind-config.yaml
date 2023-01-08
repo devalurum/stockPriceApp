@@ -2,6 +2,7 @@ kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 networking:
   ipFamily: ipv4
+  #apiServerAddress: 127.0.0.1
   apiServerAddress: 0.0.0.0
   apiServerPort: 6444
   disableDefaultCNI: false
@@ -37,5 +38,7 @@ nodes:
         hostPort: 80
         protocol: TCP
         listenAddress: 0.0.0.0
+        #listenAddress: 158.160.5.6
+        #listenAddress: 127.0.0.1
         #listenAddress: 10.129.0.30
   - role: worker

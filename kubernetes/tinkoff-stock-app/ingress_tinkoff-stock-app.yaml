@@ -3,8 +3,9 @@ kind: Ingress
 metadata:
   name: tinkoff-stock-app
 spec:
+  ingressClassName: nginx
   rules:
-      http:
+    - http:
         paths:
           - path: /tinkoff-stock-app
             pathType: Prefix
@@ -13,4 +14,3 @@ spec:
                 name: tinkoff-stock-app
                 port:
                   number: 80
-  ingressClassName: nginx
